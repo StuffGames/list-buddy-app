@@ -1,4 +1,4 @@
-# NannyAI App
+# ListBuddy App
 
 ## About
 This is the repository for the front-end of *NannyAI*.
@@ -15,3 +15,6 @@ Developed Front End using React, ...
 
 ### Sandy Son
 Developed Front End using React, ...
+
+### Tyer Millien
+Designed Website UI, Logo, Functionality, Art, Icons, ...
