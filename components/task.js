@@ -1,90 +1,84 @@
-export default function TaskPopup() {
-    
-      // Function to create a new task (for now it just logs the task)
-  const createTask = () => {
-    if (!taskName || !dueDate) {
-      alert('Please fill in both fields.');
-      return;
-    }
-    const newTask = { taskName, dueDate };
-    console.log('New Task Created:', newTask);
-    
-    // Clear inputs after task creation
-    setTaskName('');
-    setDueDate('');
+import React, { useState } from 'react'; // Import useState
+
+const TaskPopup = ({ close, addNewTask }) => {
+    const [taskName, setTaskName] = useState('');
+    const [taskCategory, setTaskCategory] = useState('work');
+    const [taskPriority, setTaskPriority] = useState(5);
+    const [taskDescription, setTaskDescription] = useState('');
+    const [taskDeadline, setTaskDeadline] = useState('');
+  
+    const handleSubmit = () => {
+      const newTask = {
+        name: taskName,
+        category: taskCategory,
+        priority: taskPriority,
+        description: taskDescription,
+        deadline: new Date(taskDeadline),
+        completed: false,
+        creation_date: new Date(),
+        completion_date: null,
+      };
+  
+      addNewTask(newTask); // Add the new task
+      close(); // Close the modal
     };
-
-    return(
-        <Popup
-      trigger={<button className="bg-blue-500 text-white p-2 rounded">+ New Task</button>}
-      modal
-      nested
-    >
-      {(close) => (
-        <div className="modal bg-white p-6 rounded-lg shadow-lg">
-          <div className="modal-header text-center mb-4">
-            <h2 className="text-xl font-semibold">New Task</h2>
-          </div>
-
-          {/* Task Name Input */}
-          <div className="mb-4">
-            <label
-              htmlFor="tname"
-              className="block text-sm font-medium text-slate-500"
+  
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
+        <div className="bg-white p-6 rounded-lg w-1/3">
+          <h2 className="text-xl font-semibold mb-4 text-slate-700">Create New Task</h2>
+          <input
+            type="text"
+            placeholder="Task Name"
+            value={taskName}
+            onChange={(e) => setTaskName(e.target.value)}
+            className="w-full p-2 border mb-4"
+          />
+          <textarea
+            placeholder="Description"
+            value={taskDescription}
+            onChange={(e) => setTaskDescription(e.target.value)}
+            className="w-full p-2 border mb-4"
+          />
+          <input
+            type="date"
+            value={taskDeadline}
+            onChange={(e) => setTaskDeadline(e.target.value)}
+            className="w-full p-2 border mb-4"
+          />
+          <div className="flex justify-between mb-4">
+            <select
+              value={taskCategory}
+              onChange={(e) => setTaskCategory(e.target.value)}
+              className="w-1/3 p-2 border"
             >
-              Task Name
-            </label>
-            <input
-              className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="text"
-              id="tname"
-              name="tname"
-              value={taskName}
-              placeholder="Enter task name"
-              required
-            />
-          </div>
-
-          {/* Due Date Input */}
-          <div className="mb-4">
-            <label
-              htmlFor="ddate"
-              className="block text-sm font-medium text-slate-500"
+              <option value="work">Work</option>
+              <option value="school">School</option>
+              <option value="home">Home</option>
+            </select>
+            <select
+              value={taskPriority}
+              onChange={(e) => setTaskPriority(Number(e.target.value))}
+              className="w-1/3 p-2 border"
             >
-              Due Date
-            </label>
-            <input
-              className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              type="date"
-              id="ddate"
-              name="ddate"
-              value={dueDate}
-              required
-            />
+              <option value="1">1 (low)</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5 (high)</option>
+            </select>
           </div>
-
-          {/* Action Buttons */}
-          <div className="modal-footer flex justify-between">
-            <button
-              onClick={createTask}
-              className="bg-green-500 text-white p-2 rounded hover:bg-green-600"
-            >
-              Create Task
+          <div className="flex justify-between">
+            <button onClick={close} className="bg-gray-500 text-white p-2 rounded-md">
+              Cancel
             </button>
-            <button
-              onClick={() => {
-                close(); // Close the modal
-                setTaskName(''); // Clear inputs
-                setDueDate('');
-              }}
-              className="bg-gray-300 text-black p-2 rounded hover:bg-gray-400"
-            >
-              Close
+            <button onClick={handleSubmit} className="bg-blue-500 text-white p-2 rounded-md">
+              Create Task
             </button>
           </div>
         </div>
-      )}
-    </Popup>
-        
+      </div>
     );
-}
+  };
+  
+  export default TaskPopup;
