@@ -1,6 +1,7 @@
 'use client'
 import React, { useState } from 'react';
 import TaskPopup from '../../components/task.js';
+import TaskView from '../../components/TaskView.js'; 
 
 const initialTasks = [
   {
@@ -109,7 +110,9 @@ const HomePage = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [showActive, setShowActive] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false); //set modalOpen
+  const [modalOpen, setModalOpen] = useState(false); // TaskPopup modal
+  const [taskViewOpen, setTaskViewOpen] = useState(false); // TaskView modal
+  const [selectedTask, setSelectedTask] = useState(null); // Currently selected task
 
   const handleToggleActive = () => setShowActive(!showActive);
   const handleToggleCompleted = () => setShowCompleted(!showCompleted);
@@ -129,11 +132,22 @@ const HomePage = () => {
     );
   };
 
+  // Open TaskView modal for a specific task
+  const openTaskView = (task) => {
+    setSelectedTask(task);
+    setTaskViewOpen(true);
+  };
+
+  // Close TaskView modal
+  const closeTaskView = () => {
+    setTaskViewOpen(false);
+    setSelectedTask(null);
+  };
+
   const activeTasks = tasks.filter((task) => !task.completed);
   const completedTasks = tasks.filter((task) => task.completed);
 
   return (
-    <body>
     <div className="flex min-h-screen">
       {/* Left Panel */}
       <div className="w-1/3 bg-white border-r p-4 min-h-screen">
@@ -201,104 +215,104 @@ const HomePage = () => {
 
       {/* Right Panel (Grid of Tasks) */}
       <div className="flex-1 bg-gray-100 p-4 grid gap-4 grid-cols-5">
-  {activeTasks
-    .sort((a, b) => a.importance - b.importance) // Sort by importance in ascending order
-    .map((task, index) => {
-      const daysUntilDeadline = Math.ceil(
-        (task.deadline - new Date()) / (1000 * 60 * 60 * 24)
-      );
-      const boxSize = task.priority <= 2 
-        ? 'col-span-2 row-span-2' 
-        : task.priority <= 4 
-        ? 'col-span-3 row-span-3' 
-        : 'col-span-4 row-span-4';
-      const color = task.category === 'work' 
-        ? 'bg-red-500' 
-        : task.category === 'school' 
-        ? 'bg-green-500' 
-        : task.category === 'home' 
-        ? 'bg-blue-500' 
-        : 'bg-purple-500';
-
-      return (
-        <div
-          key={index}
-          className={`${boxSize} ${color} p-4 text-white rounded-lg relative`}
-        >
-          <button
-                onClick={() => handleCheckboxChange(task.name)}
-                className="absolute top-2 right-2 w-6 h-6"
+        {activeTasks
+          .sort((a, b) => a.importance - b.importance) // Sort by importance in ascending order
+          .map((task, index) => {
+            const daysUntilDeadline = Math.ceil(
+              (task.deadline - new Date()) / (1000 * 60 * 60 * 24)
+            );
+            const boxSize = task.priority <= 2 
+              ? 'col-span-2 row-span-2' 
+              : task.priority <= 4 
+              ? 'col-span-3 row-span-3' 
+              : 'col-span-4 row-span-4';
+            const color = task.category === 'work' 
+              ? 'bg-red-500' 
+              : task.category === 'school' 
+              ? 'bg-green-500' 
+              : task.category === 'home' 
+              ? 'bg-blue-500' 
+              : 'bg-purple-500';
+            
+            return (
+              <div
+                key={index}
+                className={`${boxSize} ${color} p-4 text-white rounded-lg relative cursor-pointer`}
+                onClick={() => openTaskView(task)}
               >
-                {task.completed ? (
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="1" width="16" height="16" fill="white" stroke="black" strokeWidth="2"/>
-                  </svg>
-                ) : (
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="1" y="1" width="16" height="16" fill="white" stroke="black" strokeWidth="2"/>
-                  </svg>
-                )}
-              </button>
-          <h3 className="font-semibold">{task.name}</h3>
-          <p className="text-sm">{task.description}</p>
-          <div className="mt-4 text-sm font-semibold">
-            {daysUntilDeadline > 30
-              ? `Due in ${Math.floor(daysUntilDeadline / 30)} months`
-              : `Due in ${daysUntilDeadline} days`}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent parent click event
+                    handleCheckboxChange(task.name);
+                  }}
+                  className="absolute top-2 right-2 w-6 h-6"
+                >
+                  {task.completed ? (
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="1" y="1" width="16" height="16" fill="white" stroke="black" strokeWidth="2"/>
+                    </svg>
+                  ) : (
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="1" y="1" width="16" height="16" fill="white" stroke="black" strokeWidth="2"/>
+                    </svg>
+                  )}
+                </button>
+                <h3 className="font-semibold">{task.name}</h3>
+                <p className="text-sm">{task.description}</p>
+                <div className="mt-4 text-sm font-semibold">
+                  {daysUntilDeadline > 30
+                    ? `Due in ${Math.floor(daysUntilDeadline / 30)} months`
+                    : `Due in ${daysUntilDeadline} days`}
+                </div>
+              </div>
+            );
+          })}
+      </div>
+
+      {/* TaskView Modal */}
+      {taskViewOpen && selectedTask && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-4 rounded-lg w-full max-w-md">
+            <TaskView task={selectedTask} />
+            <button
+              onClick={closeTaskView}
+              className="mt-4 text-blue-500 underline"
+            >
+              Close
+            </button>
           </div>
         </div>
-      );
-    })}
-</div>
+      )}
 
-      {/* Icons and Buttons */}
-      <div className="absolute bottom-4 right-4 flex items-center space-x-2">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600"
-          onClick={() => setModalOpen(true)}> 
-            + New Task
-          </button>
+      {/* Add New Task Button */}
+      <div className="absolute bottom-4 right-4">
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600"
+          onClick={() => setModalOpen(true)}
+        >
+          + New Task
+        </button>
       </div>
 
       {/* TaskPopup Modal */}
       {modalOpen && (
         <TaskPopup close={() => setModalOpen(false)} addNewTask={addNewTask} />
       )}
-
-      {/* Profile and Settings Icons */}
-      <div className="absolute top-0 right-0 flex">
-        <button className = "scale-75" onClick={() => navigateToProfile()}>
-          <svg width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="25.5" cy="25.5" r="24" fill="white" stroke="black" strokeWidth="3"/>
-            <circle cx="26" cy="20" r="9.5" fill="white" stroke="black" strokeWidth="3"/>
-            <path d="M10.0192 44C9.69146 39.5 13.4943 35 25.7529 35C38.0115 35 41 41.3 41 44" stroke="black" strokeWidth="3" strokeLinecap="round"/>
-          </svg>
-        </button>
-        <button className = "scale-75" onClick={() => navigateToSettings()}>
-          <svg width="86" height="86" viewBox="0 0 86 86" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="43" cy="43" r="8.58642" stroke="black" strokeWidth="3"/>
-            <path d="M30.0682 25.4027C33.7954 27.7563 38.7297 25.7125 39.701 21.4126C40.4952 17.8967 45.5048 17.8967 46.299 21.4126C47.2703 25.7125 52.2046 27.7563 55.9319 25.4027C58.9795 23.4781 62.5219 27.0205 60.5973 30.0681C58.2437 33.7954 60.2875 38.7297 64.5874 39.701C68.1033 40.4952 68.1033 45.5048 64.5874 46.299C60.2875 47.2703 58.2437 52.2046 60.5973 55.9319C62.5219 58.9795 58.9795 62.5219 55.9319 60.5973C52.2046 58.2437 47.2703 60.2875 46.299 64.5874C45.5048 68.1033 40.4952 68.1033 39.701 64.5874C38.7297 60.2875 33.7954 58.2437 30.0681 60.5973C27.0205 62.5219 23.4781 58.9795 25.4027 55.9319C27.7563 52.2046 25.7125 47.2703 21.4126 46.299C17.8967 45.5048 17.8967 40.4952 21.4126 39.701C25.7125 38.7297 27.7563 33.7954 25.4027 30.0681C23.4781 27.0205 27.0205 23.4781 30.0682 25.4027Z" stroke="black" strokeWidth="3"/>
-          </svg>
-        </button>
-      </div>
     </div>
-    </body>
   );
 };
 
 // Pseudo-code functions for navigating to profile and settings
 const navigateToProfile = () => {
-  // Navigate to profile page
   console.log('Navigate to profile page');
 };
 
 const navigateToSettings = () => {
-  // Navigate to settings page
   console.log('Navigate to settings page');
 };
 
 // Pseudo-code for adding a new task
 const addNewTask = () => {
-  // Function to add a new task
   console.log('Add a new task');
 };
 
