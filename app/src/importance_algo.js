@@ -55,8 +55,11 @@ async function calculateTaskImportance({ taskDescription, daysUntilDeadline, dif
 
     // Calculate importance score
     const importanceScore = normalizedDays + priorityFactor + difficultyFactor;
+    if (importanceScore === undefined) {
+        return {status: 400};
+    }
 
-    return importanceScore.toFixed(2);
+    return {score: importanceScore.toFixed(2), status: 200};
 }
 
 // Example usage
