@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { breakdown } from "../../src/break_down";
-import { taskUpdate } from "../../src/service-api";
+import { breakdown } from "../../../src/break_down";
+import { taskUpdate } from "../../../src/service-api";
 
 export async function POST(request) {
     try {
