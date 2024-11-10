@@ -1,118 +1,166 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TaskPopup from '../../components/task.js';
 import TaskView from '../../components/TaskView.js'; 
 
-const initialTasks = [
-  {
-    name: 'Implement New Task Form',
-    deadline: new Date('2024-12-20'),
-    description: '...',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: 0,
-  },
-  {
-    name: 'Break it Down',
-    deadline: new Date('2024-11-11'),
-    description: '...',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .1,
-  },
-  {
-    name: 'Get server running',
-    deadline: new Date('2024-11-06'),
-    description: '...',
-    difficulty: 1,
-    category: 'home',
-    completed: false,
-    completion_date: null,
-    priority: 1,
-    importance: .2,
-  },
-  {
-    name: 'Weekly Reading Assignment 2',
-    deadline: new Date('2023-11-11'),
-    description: 'Complete weekly reading for class.',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .3,
-  },
-  {
-    name: 'Laundry 2',
-    deadline: new Date('2024-11-06'),
-    description: 'Do the laundry.',
-    difficulty: 1,
-    category: 'home',
-    completed: true,
-    completion_date: new Date('2024-11-06'),
-    priority: 1,
-    importance: .4,
-  },
-  {
-    name: 'item',
-    deadline: new Date('2023-11-11'),
-    description: 'Complete weekly reading for class.',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .5,
-  },
-  {
-    name: 'Buy Christmas Gifts 2',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .6,
-  },
-  {
-    name: 'Buy Christmas Gifts 3',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .7,
-  },
-  {
-    name: 'Buy Christmas Gifts 4',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .8,
-  },
-  // Add more tasks here as needed
-];
+// const initialTasks = [
+//   {
+//     name: 'Implement New Task Form',
+//     deadline: new Date('2024-12-20'),
+//     description: '...',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: 0,
+//   },
+//   {
+//     name: 'Break it Down',
+//     deadline: new Date('2024-11-11'),
+//     description: '...',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .1,
+//   },
+//   {
+//     name: 'Get server running',
+//     deadline: new Date('2024-11-06'),
+//     description: '...',
+//     difficulty: 1,
+//     category: 'home',
+//     completed: false,
+//     completion_date: null,
+//     priority: 1,
+//     importance: .2,
+//   },
+//   {
+//     name: 'Weekly Reading Assignment 2',
+//     deadline: new Date('2023-11-11'),
+//     description: 'Complete weekly reading for class.',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .3,
+//   },
+//   {
+//     name: 'Laundry 2',
+//     deadline: new Date('2024-11-06'),
+//     description: 'Do the laundry.',
+//     difficulty: 1,
+//     category: 'home',
+//     completed: true,
+//     completion_date: new Date('2024-11-06'),
+//     priority: 1,
+//     importance: .4,
+//   },
+//   {
+//     name: 'item',
+//     deadline: new Date('2023-11-11'),
+//     description: 'Complete weekly reading for class.',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .5,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 2',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .6,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 3',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .7,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 4',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .8,
+//   },
+//   // Add more tasks here as needed
+// ];
 
 const HomePage = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
   const [showActive, setShowActive] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const [modalOpen, setModalOpen] = useState(false); // TaskPopup modal
   const [taskViewOpen, setTaskViewOpen] = useState(false); // TaskView modal
   const [selectedTask, setSelectedTask] = useState(null); // Currently selected task
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch tasks only after the component mounts
+    const starterData = async () => {
+      try {
+        // Ensure sessionStorage is accessed only in the client-side
+        const userData = JSON.parse(sessionStorage.getItem("user"));
+        if (!userData) {
+          throw new Error("No user data found in sessionStorage");
+        }
+
+        // IF DOESN'T WORK JUST READ DATA FROM SESSION STORAGE???
+        const response = await fetch('/api/tasks/getTasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userData.user_id }), // Send the user_id in the request body
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || 'Something went wrong.');
+        }
+
+        const allTasks = await response.json();
+        setTasks(allTasks.totalTasks);
+      } catch (err) {
+        setError('Failed to get initial data.');
+        console.error('Error fetching tasks:', err);
+      } finally {
+        setLoading(false); // Set loading to false once the data is fetched or an error occurs
+      }
+    };
+
+    starterData();
+  }, []); // Empty dependency array ensures this runs only once after the component mounts
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const handleToggleActive = () => setShowActive(!showActive);
   const handleToggleCompleted = () => setShowCompleted(!showCompleted);
@@ -172,7 +220,7 @@ const HomePage = () => {
                     <span className="ml-2 text-black" >{task.name}</span>
                   </div>
                   <div className="text-sm text-black">
-                    Due {task.deadline.toLocaleDateString()}
+                    Due {new Date(task.deadline).toLocaleDateString()}
                   </div>
                 </li>
               ))}
@@ -201,7 +249,7 @@ const HomePage = () => {
                   <div className="text-sm text-black">
                     Completed {task.completion_date?.toLocaleDateString()}
                   </div>
-                  {task.completion_date <= task.deadline && (
+                  {task.completion_date <= (new Date(task.deadline)) && (
                     <svg width="23" height="22" viewBox="0 0 46 44" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M21.279 1.90679C22.0535 0.59869 23.9465 0.598689 24.721 1.90679L30.7152 12.0311C30.9962 12.5058 31.4607 12.8433 31.9989 12.9638L43.4801 15.5361C44.9635 15.8684 45.5485 17.6688 44.5437 18.8096L36.7672 27.639C36.4026 28.0529 36.2252 28.599 36.2768 29.1481L37.3784 40.8622C37.5207 42.3757 35.9892 43.4884 34.5938 42.8854L23.7934 38.2179C23.2871 37.9991 22.7129 37.9991 22.2066 38.2179L11.4062 42.8853C10.0108 43.4884 8.47931 42.3757 8.62163 40.8622L9.72317 29.1481C9.77481 28.599 9.59737 28.0529 9.23282 27.639L1.4563 18.8096C0.451543 17.6688 1.03652 15.8684 2.51993 15.5361L14.0011 12.9638C14.5393 12.8433 15.0038 12.5058 15.2848 12.0311L21.279 1.90679Z" fill="#FFE100"/>
                     </svg>
@@ -219,7 +267,7 @@ const HomePage = () => {
           .sort((a, b) => a.importance - b.importance) // Sort by importance in ascending order
           .map((task, index) => {
             const daysUntilDeadline = Math.ceil(
-              (task.deadline - new Date()) / (1000 * 60 * 60 * 24)
+              (new Date(task.deadline) - new Date()) / (1000 * 60 * 60 * 24)
             );
             const boxSize = task.priority <= 2 
               ? 'col-span-2 row-span-2' 

@@ -12,7 +12,8 @@ export async function POST(request) {
     if (taskResponse.status !== 200) {
       return NextResponse.json({message: taskResponse.message}, {status: 400});
     }
-    return NextResponse.json({message: "Success getting tasks"}, {status: 200}, {tasks: taskResponse.tasks});
+    const totalTasks = taskResponse.tasks;
+    return NextResponse.json({message: "Success getting tasks", totalTasks}, {status: 200});
   } catch (error) {
     return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
   }
