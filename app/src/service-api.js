@@ -112,6 +112,8 @@ async function taskUpdate(params) {
         const data = JSON.parse(jsonData);
         const user = data.users.find(u => u.user_id === params.user_id);
 
+        // console.log(user.tasks.find(t=>t.task_id == params.task_id));
+
         if (user === undefined) {
             return {message: "User not defined in getting tasks", status: 400};
         }
@@ -122,8 +124,10 @@ async function taskUpdate(params) {
         task.completed = params.completed;
 
         data.users
-        .filter(u=> u.user_id === user_id)[0]
+        .filter(u=> u.user_id === params.user_id)[0]
         .tasks.filter(t => t.task_id == params.task_id)[0];
+
+        await fs.writeFile(temp_db, JSON.stringify(data));
 
         return {message: "Success editing task", status: 200};
     }
