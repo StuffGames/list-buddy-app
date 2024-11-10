@@ -1,6 +1,6 @@
 // app/api/tasks/getTasks/route.js
 import { NextResponse } from 'next/server';
-import { getTasks } from '../../../src/service-crud';
+import { getAllTasks } from '../../../src/service-crud';
 
 // For a get request we should get the id of the user
 export async function GET(request) {
