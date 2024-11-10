@@ -26,7 +26,7 @@ const breakdown = async (taskName, taskDescription) => {
 
   const thebreakdown = response.choices[0].message.content.trim();
   //return { difficulty, priority};
-  return thebreakdown;
+  return {res: thebreakdown};
 };
 
 // async function main() {
