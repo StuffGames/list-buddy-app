@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Import useState
+import React, { useState, useEffect } from 'react'; // Import useState
 
 const TaskPopup = ({ close, addNewTask }) => {
     const [taskName, setTaskName] = useState('');
@@ -6,10 +6,23 @@ const TaskPopup = ({ close, addNewTask }) => {
     const [taskPriority, setTaskPriority] = useState(5);
     const [taskDescription, setTaskDescription] = useState('');
     const [taskDeadline, setTaskDeadline] = useState('');
+    const [userId, setUserId] = useState(null); // State to hold the user_id
+    const [userTaskLength, setUserTaskLength] = useState(null);
   
-    const handleSubmit = () => {
+    // Fetch user_id from sessionStorage when the component mounts
+    useEffect(() => {
+      const user = JSON.parse(sessionStorage.getItem('user')); // Assuming user is stored as a JSON string
+      if (user && user.user_id) {
+        setUserId(user.user_id); // Set user_id if it exists
+        setUserTaskLength(user.tasks.length);
+      }
+    }, []); // Empty dependency array means this runs once on mount
+
+    const handleSubmit = async () => {
       const newTask = {
         name: taskName,
+        user_id: userId,
+        task_id: userTaskLength + 1,
         category: taskCategory,
         priority: taskPriority,
         description: taskDescription,
@@ -18,9 +31,36 @@ const TaskPopup = ({ close, addNewTask }) => {
         creation_date: new Date(),
         completion_date: null,
       };
+
+      try {
+        // Send a POST request to the internal API
+        const response = await fetch('/api/tasks/createTask', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', // Specify that we're sending JSON
+          },
+          body: JSON.stringify(newTask), // Convert newTask object to JSON string
+        });
   
-      addNewTask(newTask); // Add the new task
-      close(); // Close the modal
+        if (!response.ok) {
+          // If the response status is not OK (e.g., 400 or 500), throw an error
+          throw new Error('Failed to create task');
+        }
+  
+        // Optionally, you can parse the response if needed
+        const result = await response.json();
+        console.log('Task created successfully:', result);
+  
+        // Call the addNewTask function (to update the UI or state outside the modal)
+        //addNewTask(newTask);
+  
+        // Close the modal
+        close();
+        window.location.href = '/home';
+      } catch (error) {
+        console.error('Error creating task:', error);
+        // Optionally, you could display an error message to the user here
+      }
     };
   
     return (
