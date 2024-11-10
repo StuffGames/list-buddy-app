@@ -28,6 +28,142 @@
                     "difficulty": 2,
                     "importance": 0,
                     "completed": false
+                },
+                {
+                    "user_id": 1,
+                    "task_id": 3,
+                    "deadline": "2024-11-15T00:00:00.000Z",
+                    "name": "Clean the house",
+                    "category": "home",
+                    "description": "I have to sweep around the house because i left food everywhere",
+                    "priority": 5,
+                    "completed": false
+                },
+                {
+                    "user_id": 1,
+                    "task_id": 4,
+                    "deadline": "2024-11-11T00:00:00.000Z",
+                    "name": "Mop the floor",
+                    "category": "home",
+                    "description": "i spilt food everywhere and now i have to clean it all up",
+                    "priority": 3,
+                    "completed": false
+                }
+            ]
+        },
+        {
+            "username": "ryannguyen",
+            "password": "hungrydino",
+            "user_id": 2,
+            "star_count": 0,
+            "tasks": [
+                {
+                    "user_id": 2,
+                    "task_id": 1,
+                    "name": "Implement New Task Form",
+                    "deadline": "2024-12-20T00:00:00.000Z",
+                    "description": "...",
+                    "difficulty": 3,
+                    "category": "work",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 2,
+                    "name": "Break it Down",
+                    "deadline": "2024-11-11T00:00:00.000Z",
+                    "description": "...",
+                    "difficulty": 2,
+                    "category": "school",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.1
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 3,
+                    "name": "Get server running",
+                    "deadline": "2024-11-06T00:00:00.000Z",
+                    "description": "...",
+                    "difficulty": 1,
+                    "category": "home",
+                    "completed": false,
+                    "priority": 1,
+                    "importance": 0.2
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 4,
+                    "name": "Weekly Reading Assignment 2",
+                    "deadline": "2023-11-11T00:00:00.000Z",
+                    "description": "Complete weekly reading for class.",
+                    "difficulty": 2,
+                    "category": "school",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.3
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 5,
+                    "name": "Laundry 2",
+                    "deadline": "2024-11-06T00:00:00.000Z",
+                    "description": "Do the laundry.",
+                    "difficulty": 1,
+                    "category": "home",
+                    "completed": true,
+                    "priority": 1,
+                    "importance": 0.4
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 6,
+                    "name": "item",
+                    "deadline": "2023-11-11T00:00:00.000Z",
+                    "description": "Complete weekly reading for class.",
+                    "difficulty": 2,
+                    "category": "school",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.5
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 7,
+                    "name": "Buy Christmas Gifts 2",
+                    "deadline": "2024-12-20T00:00:00.000Z",
+                    "description": "Buying gifts for family and friends.",
+                    "difficulty": 3,
+                    "category": "work",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.6
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 8,
+                    "name": "Buy Christmas Gifts 3",
+                    "deadline": "2024-12-20T00:00:00.000Z",
+                    "description": "Buying gifts for family and friends.",
+                    "difficulty": 3,
+                    "category": "work",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.7
+                },
+                {
+                    "user_id": 2,
+                    "task_id": 9,
+                    "name": "Buy Christmas Gifts 4",
+                    "deadline": "2024-12-20T00:00:00.000Z",
+                    "description": "Buying gifts for family and friends.",
+                    "difficulty": 3,
+                    "category": "work",
+                    "completed": false,
+                    "priority": 2,
+                    "importance": 0.8
                 }
             ]
         }
