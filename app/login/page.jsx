@@ -81,6 +81,7 @@ const Login=() => {
                         <input
                             className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
+                            style={{color: 'black'}}
                             id="username"
                             name="username"
                             placeholder="Enter your username"
@@ -101,6 +102,7 @@ const Login=() => {
                         <input
                             className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="password"
+                            style={{color: 'black'}}
                             id="password"
                             name="password"
                             placeholder="Enter your password"
@@ -110,19 +112,27 @@ const Login=() => {
                         />
                     </div>
 
-                    {/* Remember Me Checkbox */}
-                    <div className="mb-4 flex items-center">
+                    {/* Remember Me and Sign Up Section */}
+                    <div className="mb-4 flex justify-between items-center">
+                    {/* Remember Me */}
+                    <div className="flex items-center">
                         <input
-                            className="w-4 h-4 mr-2"
-                            type="checkbox"
-                            id="remember-me"
-                            name="remember"
-                            checked={rememberMe}
-                            onChange={(e) => setRememberMe(e.target.checked)}
+                        className="w-4 h-4 mr-2"
+                        type="checkbox"
+                        id="remember-me"
+                        name="remember"
+                        checked={rememberMe}
+                        onChange={(e) => setRememberMe(e.target.checked)}
                         />
                         <label htmlFor="remember-me" className="text-sm text-slate-500">
-                            Remember Me
+                        Remember Me
                         </label>
+                    </div>
+
+                    {/* Sign Up Link */}
+                    <a href="#" className="text-sm text-blue-500 hover:underline">
+                        Sign Up
+                    </a>
                     </div>
 
                     {/* Submit Button */}
@@ -140,7 +150,7 @@ const Login=() => {
                     
                     <div className="text-center">
                         <a
-                            href="forgot-password.html"
+                            href="#"
                             className="text-sm text-blue-500 hover:underline"
                         >
                             Forgot Password?
