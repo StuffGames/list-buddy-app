@@ -3,6 +3,7 @@
         {
             "username": "user",
             "password": "pass",
+            "star_count": 0,
             "tasks":[
                 {
                     "user_id": 1,
