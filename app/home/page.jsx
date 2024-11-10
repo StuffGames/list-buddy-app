@@ -224,8 +224,8 @@ const HomePage = () => {
             const boxSize = task.priority <= 2 
               ? 'col-span-2 row-span-2' 
               : task.priority <= 4 
-              ? 'col-span-3 row-span-3' 
-              : 'col-span-4 row-span-4';
+              ? 'col-span-2 row-span-2' 
+              : 'col-span-2 row-span-2';
             const color = task.category === 'work' 
               ? 'bg-red-500' 
               : task.category === 'school' 
@@ -271,18 +271,18 @@ const HomePage = () => {
 
       {/* TaskView Modal */}
       {taskViewOpen && selectedTask && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-4 rounded-lg w-full max-w-md">
-            <TaskView task={selectedTask} />
-            <button
-              onClick={closeTaskView}
-              className="mt-4 text-blue-500 underline"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={closeTaskView} // Close the modal when clicking the background
+        >
+        <div
+          className="bg-white p-4 rounded-2xl w-full max-w-lg h-full"
+          onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal
+        >
+      <TaskView task={selectedTask} />
+    </div>
+  </div>
+)}
 
       {/* Add New Task Button */}
       <div className="absolute bottom-4 right-4">
