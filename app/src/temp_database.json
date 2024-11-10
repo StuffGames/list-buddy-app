@@ -3,16 +3,31 @@
         {
             "username": "user",
             "password": "pass",
+            "user_id": 1,
             "star_count": 0,
-            "tasks":[
+            "tasks": [
                 {
                     "user_id": 1,
                     "task_id": 1,
                     "deadline": "2012-04-23T18:25:43.511Z",
+                    "name": "Homework",
                     "category": "School",
                     "description": "Just simple homework to do...",
                     "priority": 3,
-                    "difficulty": 2
+                    "difficulty": 2,
+                    "importance": 0,
+                    "completed": false
+                },
+                {
+                    "user_id": 1,
+                    "task_id": 4321,
+                    "deadline": 1731234343799,
+                    "name": "History Homework",
+                    "description": "really long history homework",
+                    "priority": 5,
+                    "difficulty": 2,
+                    "importance": 0,
+                    "completed": false
                 }
             ]
         }
@@ -21,11 +36,14 @@
         {
             "user_id": 1,
             "task_id": 1,
+            "name": "Homework",
+            "completed": false,
             "deadline": "",
             "category": "School",
             "description": "Just simple homework to do...",
             "priority": 3,
-            "difficulty": 2
+            "difficulty": 2,
+            "importance": 0
         }
     ]
 }
