@@ -1,5 +1,6 @@
 'use client'
 import React, { useState } from 'react';
+import TaskPopup from '../../components/task.js';
 
 const initialTasks = [
   {
@@ -108,6 +109,7 @@ const HomePage = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [showActive, setShowActive] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false); //set modalOpen
 
   const handleToggleActive = () => setShowActive(!showActive);
   const handleToggleCompleted = () => setShowCompleted(!showCompleted);
@@ -251,10 +253,16 @@ const HomePage = () => {
 
       {/* Icons and Buttons */}
       <div className="absolute bottom-4 right-4 flex items-center space-x-2">
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600">
-          + New Task
-        </button>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600"
+          onClick={() => setModalOpen(true)}> 
+            + New Task
+          </button>
       </div>
+
+      {/* TaskPopup Modal */}
+      {modalOpen && (
+        <TaskPopup close={() => setModalOpen(false)} addNewTask={addNewTask} />
+      )}
 
       {/* Profile and Settings Icons */}
       <div className="absolute top-0 right-0 flex">
