@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import React, { useState, useEffect } from 'react'; // Import useState
 
 const TaskPopup = ({ close, addNewTask }) => {
@@ -22,7 +23,7 @@ const TaskPopup = ({ close, addNewTask }) => {
       const newTask = {
         name: taskName,
         user_id: userId,
-        task_id: userTaskLength + 1,
+        task_id: self.crypto.randomUUID(),
         category: taskCategory,
         priority: taskPriority,
         description: taskDescription,
@@ -30,9 +31,23 @@ const TaskPopup = ({ close, addNewTask }) => {
         completed: false,
         creation_date: new Date(),
         completion_date: null,
+        difficulty: 0,
+        importance: 0
       };
-
+      
       try {
+        const response2 = await fetch('/api/openai/importance', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json', // Specify that we're sending JSON
+          },
+          body: JSON.stringify(newTask), // Convert newTask object to JSON string
+        });
+
+        const responseTask = await response2.json();
+
+        newTask.importance = responseTask.score;
+
         // Send a POST request to the internal API
         const response = await fetch('/api/tasks/createTask', {
           method: 'POST',

@@ -26,7 +26,7 @@ export default function TaskView({ task }) {
   const handleButton = async () => {
     try {
       // Make a fetch request to the Next.js API route to simplify the task
-      const response = await fetch('/api/openai', {
+      const response = await fetch('/api/openai/simplify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
