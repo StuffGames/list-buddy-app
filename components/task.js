@@ -29,12 +29,15 @@ const TaskPopup = ({ close, addNewTask }) => {
           <h2 className="text-xl font-semibold mb-4 text-slate-700">Create New Task</h2>
           <input
             type="text"
+            style={{ color: 'black' }}
             placeholder="Task Name"
             value={taskName}
             onChange={(e) => setTaskName(e.target.value)}
             className="w-full p-2 border mb-4"
           />
           <textarea
+            type="text"
+            style={{ color: 'black' }}
             placeholder="Description"
             value={taskDescription}
             onChange={(e) => setTaskDescription(e.target.value)}
@@ -42,6 +45,7 @@ const TaskPopup = ({ close, addNewTask }) => {
           />
           <input
             type="date"
+            style={{ color: 'black' }}
             value={taskDeadline}
             onChange={(e) => setTaskDeadline(e.target.value)}
             className="w-full p-2 border mb-4"
@@ -49,6 +53,7 @@ const TaskPopup = ({ close, addNewTask }) => {
           <div className="flex justify-between mb-4">
             <select
               value={taskCategory}
+              style={{ color: 'black' }}
               onChange={(e) => setTaskCategory(e.target.value)}
               className="w-1/3 p-2 border"
             >
@@ -58,14 +63,15 @@ const TaskPopup = ({ close, addNewTask }) => {
             </select>
             <select
               value={taskPriority}
+              style={{ color: 'black' }}
               onChange={(e) => setTaskPriority(Number(e.target.value))}
               className="w-1/3 p-2 border"
             >
-              <option value="1">1 (low)</option>
+              <option value="1">1 (low priority)</option>
               <option value="2">2</option>
               <option value="3">3</option>
               <option value="4">4</option>
-              <option value="5">5 (high)</option>
+              <option value="5">5 (high priority)</option>
             </select>
           </div>
           <div className="flex justify-between">
