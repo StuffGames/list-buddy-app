@@ -1,10 +1,67 @@
- const Login=() => {
+'use client';
+
+import { useState } from 'react';
+
+const Login=() => {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const[rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault(); // Prevent the form from submitting the default way
+      setLoading(true);
+      setError('');
+  
+      // Prepare the request body
+      const credentials = {
+        username,
+        password
+      };
+  
+      try {
+        // Send a POST request to the API for authentication
+        console.log(credentials);
+        const response = await fetch('/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(credentials),
+        });
+  
+        if (!response.ok) {
+          // Handle error from the backend (invalid credentials, etc.)
+          const data = await response.json();
+          setError(data.message || 'Something went wrong.');
+          setLoading(false);
+          return;
+        }
+  
+        // If successful, handle the success (e.g., redirect, store token, etc.)
+        const data = await response.json();
+        // You can store the token or user info in localStorage, sessionStorage, or cookies
+        console.log('Logged in successfully:', data);
+        // Redirect to a protected page
+        window.location.href = '/home';
+
+      } catch (err) {
+        console.error('An error occurred during login:', err);
+        setError('Failed to log in.');
+        setLoading(false);
+      }
+    };
+  
     return (
         <div className="h-screen bg-zinc-100 relative overflow-hidden">
 
             {/* Form Content */}
             <div className="flex items-center justify-center h-full relative z-10">
-                <form className="bg-white p-8 rounded-2xl w-96 shadow-lg">
+                <form
+                    onSubmit={handleSubmit} 
+                    className="bg-white p-8 rounded-2xl w-96 shadow-lg"
+                >
                     <h1 className="text-center text-2xl text-slate-700 font-medium mb-4">
                         Welcome Back to
                     </h1>
@@ -13,9 +70,10 @@
                     </h1>
                     <p className="text-center text-sm mb-6 text-slate-500">Login here:</p>
 
+                    {/* Username Input */}
                     <div className="mb-4">
                         <label
-                            htmlFor="fname"
+                            htmlFor="username"
                             className="block text-sm font-medium text-slate-500"
                         >
                             Username
@@ -23,13 +81,16 @@
                         <input
                             className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="text"
-                            id="fname"
-                            name="fname"
+                            id="username"
+                            name="username"
                             placeholder="Enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             required
                         />
                     </div>
 
+                    {/* Password Input*/}
                     <div className="mb-4">
                         <label
                             htmlFor="password"
@@ -43,30 +104,40 @@
                             id="password"
                             name="password"
                             placeholder="Enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
                     </div>
 
+                    {/* Remember Me Checkbox */}
                     <div className="mb-4 flex items-center">
                         <input
                             className="w-4 h-4 mr-2"
                             type="checkbox"
                             id="remember-me"
                             name="remember"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
                         />
                         <label htmlFor="remember-me" className="text-sm text-slate-500">
                             Remember Me
                         </label>
                     </div>
 
+                    {/* Submit Button */}
                     <div className="mb-6">
                         <input
                             className="w-full p-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
                             type="submit"
-                            value="Submit"
+                            value={loading ? 'Logging in...' : 'Submit'}
+                            disabled={loading} // Disable button while loading
                         />
                     </div>
 
+                    {/* Error Message */}
+                    {error && <p className="text-center text-red-500">{error}</p>}
+                    
                     <div className="text-center">
                         <a
                             href="forgot-password.html"
