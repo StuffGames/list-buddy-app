@@ -1,118 +1,165 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TaskPopup from '../../components/task.js';
 import TaskView from '../../components/TaskView.js'; 
 
-const initialTasks = [
-  {
-    name: 'Implement New Task Form',
-    deadline: new Date('2024-12-20'),
-    description: '...',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: 0,
-  },
-  {
-    name: 'Break it Down',
-    deadline: new Date('2024-11-11'),
-    description: '...',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .1,
-  },
-  {
-    name: 'Get server running',
-    deadline: new Date('2024-11-06'),
-    description: '...',
-    difficulty: 1,
-    category: 'home',
-    completed: false,
-    completion_date: null,
-    priority: 1,
-    importance: .2,
-  },
-  {
-    name: 'Weekly Reading Assignment 2',
-    deadline: new Date('2023-11-11'),
-    description: 'Complete weekly reading for class.',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .3,
-  },
-  {
-    name: 'Laundry 2',
-    deadline: new Date('2024-11-06'),
-    description: 'Do the laundry.',
-    difficulty: 1,
-    category: 'home',
-    completed: true,
-    completion_date: new Date('2024-11-06'),
-    priority: 1,
-    importance: .4,
-  },
-  {
-    name: 'item',
-    deadline: new Date('2023-11-11'),
-    description: 'Complete weekly reading for class.',
-    difficulty: 2,
-    category: 'school',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .5,
-  },
-  {
-    name: 'Buy Christmas Gifts 2',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .6,
-  },
-  {
-    name: 'Buy Christmas Gifts 3',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .7,
-  },
-  {
-    name: 'Buy Christmas Gifts 4',
-    deadline: new Date('2024-12-20'),
-    description: 'Buying gifts for family and friends.',
-    difficulty: 3,
-    category: 'work',
-    completed: false,
-    completion_date: null,
-    priority: 2,
-    importance: .8,
-  },
-  // Add more tasks here as needed
-];
+// const initialTasks = [
+//   {
+//     name: 'Implement New Task Form',
+//     deadline: new Date('2024-12-20'),
+//     description: '...',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: 0,
+//   },
+//   {
+//     name: 'Break it Down',
+//     deadline: new Date('2024-11-11'),
+//     description: '...',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .1,
+//   },
+//   {
+//     name: 'Get server running',
+//     deadline: new Date('2024-11-06'),
+//     description: '...',
+//     difficulty: 1,
+//     category: 'home',
+//     completed: false,
+//     completion_date: null,
+//     priority: 1,
+//     importance: .2,
+//   },
+//   {
+//     name: 'Weekly Reading Assignment 2',
+//     deadline: new Date('2023-11-11'),
+//     description: 'Complete weekly reading for class.',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .3,
+//   },
+//   {
+//     name: 'Laundry 2',
+//     deadline: new Date('2024-11-06'),
+//     description: 'Do the laundry.',
+//     difficulty: 1,
+//     category: 'home',
+//     completed: true,
+//     completion_date: new Date('2024-11-06'),
+//     priority: 1,
+//     importance: .4,
+//   },
+//   {
+//     name: 'item',
+//     deadline: new Date('2023-11-11'),
+//     description: 'Complete weekly reading for class.',
+//     difficulty: 2,
+//     category: 'school',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .5,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 2',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .6,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 3',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .7,
+//   },
+//   {
+//     name: 'Buy Christmas Gifts 4',
+//     deadline: new Date('2024-12-20'),
+//     description: 'Buying gifts for family and friends.',
+//     difficulty: 3,
+//     category: 'work',
+//     completed: false,
+//     completion_date: null,
+//     priority: 2,
+//     importance: .8,
+//   },
+//   // Add more tasks here as needed
+// ];
 
 const HomePage = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  const [tasks, setTasks] = useState([]);
   const [showActive, setShowActive] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
   const [modalOpen, setModalOpen] = useState(false); // TaskPopup modal
   const [taskViewOpen, setTaskViewOpen] = useState(false); // TaskView modal
   const [selectedTask, setSelectedTask] = useState(null); // Currently selected task
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // Fetch tasks only after the component mounts
+    const starterData = async () => {
+      try {
+        // Ensure sessionStorage is accessed only in the client-side
+        const userData = JSON.parse(sessionStorage.getItem("user"));
+        if (!userData) {
+          throw new Error("No user data found in sessionStorage");
+        }
+
+        const response = await fetch('/api/tasks/getTasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userData.user_id }), // Send the user_id in the request body
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || 'Something went wrong.');
+        }
+
+        const allTasks = await response.json();
+        setTasks(allTasks.tasks);
+      } catch (err) {
+        setError('Failed to get initial data.');
+        console.error('Error fetching tasks:', err);
+      } finally {
+        setLoading(false); // Set loading to false once the data is fetched or an error occurs
+      }
+    };
+
+    starterData();
+  }, []); // Empty dependency array ensures this runs only once after the component mounts
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   const handleToggleActive = () => setShowActive(!showActive);
   const handleToggleCompleted = () => setShowCompleted(!showCompleted);

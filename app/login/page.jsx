@@ -22,7 +22,6 @@ const Login=() => {
   
       try {
         // Send a POST request to the API for authentication
-        console.log(credentials);
         const response = await fetch('/api/login', {
           method: 'POST',
           headers: {
@@ -42,6 +41,7 @@ const Login=() => {
         // If successful, handle the success (e.g., redirect, store token, etc.)
         const data = await response.json();
         // You can store the token or user info in localStorage, sessionStorage, or cookies
+        sessionStorage.setItem("user", JSON.stringify(data.user));
         console.log('Logged in successfully:', data);
         // Redirect to a protected page
         window.location.href = '/home';
