@@ -1,0 +1,30 @@
+{
+    "users": [
+        {
+            "username": "user",
+            "password": "pass",
+            "tasks":[
+                {
+                    "user_id": 1,
+                    "task_id": 1,
+                    "deadline": "2012-04-23T18:25:43.511Z",
+                    "category": "School",
+                    "description": "Just simple homework to do...",
+                    "priority": 3,
+                    "difficulty": 2
+                }
+            ]
+        }
+    ],
+    "tasks": [
+        {
+            "user_id": 1,
+            "task_id": 1,
+            "deadline": "",
+            "category": "School",
+            "description": "Just simple homework to do...",
+            "priority": 3,
+            "difficulty": 2
+        }
+    ]
+}
