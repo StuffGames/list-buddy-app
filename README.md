@@ -1,7 +1,9 @@
 # ListBuddy App
 
 ## About
-This is the repository for the front-end of *ListBuddy*. 
+This is the repository for the front-end of *ListBuddy*.  
+
+Run locally with `npm run dev`.
 
 ## Inspiration
 We wanted to create an application that could help people with executive dysfunction with managing and completing tasks. People with this behavioral symptom may feel helpless when it comes to getting tasks done, leading them to shut down and not complete any tasks at all.
@@ -14,16 +16,16 @@ We used React and Tailwind to stylize our web application. OpenAI was used to al
 
 ## Authors
 ### Juan Sanchez Roa
-Designed Software, Managed development time, helped front end work, ...
+Designed Software, Managed development time, helped front end work, created back end.
 
 ### Ryan Nguyen
-Created Idea, Designed Functionality, helped front end work, ...
+Created Idea, Designed Functionality, helped front end work, Created OpenAI API helper functions.
 
 ### Josie Lee
-Developed Front End using React and Tailwind, ...
+Developed Front End using React and Tailwind using designs from Tyler.
 
 ### Sandy Son
-Developed Front End using React and Tailwind, ...
+Developed Front End using React and Tailwind, Curated the Devpost submission.
 
 ### Tyler Millien
-Designed Website UI, Logo, Functionality, Art, Icons, ...
+Designed Website UI, Logo, Functionality, Art, Icons, everything nice you see.

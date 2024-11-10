@@ -87,6 +87,7 @@ const HomePage = () => {
   const closeTaskView = () => {
     setTaskViewOpen(false);
     setSelectedTask(null);
+    window.location.href = '/home';
   };
 
   const activeTasks = tasks.filter((task) => !task.completed);

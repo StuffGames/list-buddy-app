@@ -44,6 +44,7 @@ export default function TaskView({ task }) {
 
       // Update the simplified task in the state
       setSimplifiedTask(result.fullText);
+      // console.log(simplifiedTask);
     } catch (error) {
       console.error('Error:', error);
       alert('Error simplifying task');
@@ -55,7 +56,7 @@ export default function TaskView({ task }) {
       <div className= {`p-5 ${color[0]} text-white rounded-xl h-full relative`}>
           <h2 className="text-3xl font-bold">{task.name}</h2>
           <p className="mt-4 text-sm font-bold">Complete by: {new Date(task.deadline).toLocaleDateString()}</p>
-          <p className="mt-4 font-bold">{task.description}</p>
+          <p className="mt-4 font-bold">{simplifiedTask ? simplifiedTask : task.description}</p>
           <div className="flex items-center space-x-2 absolute bottom-4 justify-center mt-6">
           <button
               className={`mt-4 px-4 py-2 bg-white ${color[1]} font-semibold rounded hover:bg-blue-100 transition`}
