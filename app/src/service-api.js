@@ -47,7 +47,8 @@ async function createTask(params) {
         try {
             const jsonData = await fs.readFile(temp_db, "utf8");
             const data = JSON.parse(jsonData);
-            const user = data.users.filter(u => u.user_id === params.user_id)[0];
+            // used filter() before this...
+            const user = data.users.find(u => u.user_id === params.user_id);
 
             // verify is user exists
             if (user === undefined) {
@@ -55,22 +56,25 @@ async function createTask(params) {
             }
 
             // Add task to user and database
-            user.tasks.push(
+            data.users.filter(u=> u.user_id === params.user_id)[0].tasks.push(
                 {
                     user_id: user.user_id,
                     task_id: params.task_id,
                     deadline: params.deadline,
+                    name: params.name,
                     category: params.category,
                     description: params.description,
                     priority: params.priority,
-                    difficulty: params.difficulty
+                    difficulty: params.difficulty,
+                    importance: params.importance,
+                    completed: params.completed
                 }
             );
 
             // Write out
-            
-            return {message: "Error, wrong password", status: 400};
-            
+            await fs.writeFile(temp_db, JSON.stringify(data));
+
+            return {message: "Wrote to database", status: 200};
         } catch (error) {
             console.error(`Error reading ${temp_db}: ${error}`);
             return {message: "error reading temp db", status: 400};
@@ -82,19 +86,52 @@ async function createTask(params) {
     }
 }
 
-async function getAllTasks() {
-    // const endpoint = '/getTasks';
-    // try {
-    //     const response = await fetch(url + endpoint, {
-    //         method: 'GET'
-    //     });
-    //     if (!response.ok) {
-    //         throw new Error(`Response status: ${response.status} with response: ${response.text()}`);
-    //     }
-    // } catch (error) {
-    //     console.error(error.message);
-    // }
-    return {};
+async function getAllTasks(user_id) {
+
+    const db_response = await connectToDatabase();
+
+    if (db_response.status !== 200) {
+        const jsonData = await fs.readFile(temp_db, "utf8");
+        const data = JSON.parse(jsonData);
+        const user = data.users.filter(u => u.user_id === user_id)[0];
+
+        if (user === undefined) {
+            return {message: "User not defined in getting tasks", status: 400};
+        }
+
+        return {message: "Success getting tasks", status: 200, tasks: user.tasks};
+    }
+    else {
+        return {message: "success on connecting to database somehow", status: 200};
+    }
 }
 
-export {login, createTask, getAllTasks};
+async function taskUpdate(params) {
+    const db_response = await connectToDatabase();
+
+    if (db_response.status !== 200) {
+        const jsonData = await fs.readFile(temp_db, "utf8");
+        const data = JSON.parse(jsonData);
+        const user = data.users.find(u => u.user_id === params.user_id);
+
+        if (user === undefined) {
+            return {message: "User not defined in getting tasks", status: 400};
+        }
+
+        const task = user.tasks.find(t => t.task_id == params.task_id);
+
+        task.description = params.description;
+        task.completed = params.completed;
+
+        data.users
+        .filter(u=> u.user_id === user_id)[0]
+        .tasks.filter(t => t.task_id == params.task_id)[0];
+
+        return {message: "Success editing task", status: 200};
+    }
+    else {
+        return {message: "success on connecting to database somehow", status: 200};
+    }
+}
+
+export {login, createTask, getAllTasks, taskUpdate};

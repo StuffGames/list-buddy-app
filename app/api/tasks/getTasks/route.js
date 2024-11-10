@@ -1,21 +1,18 @@
 // app/api/tasks/getTasks/route.js
 import { NextResponse } from 'next/server';
-import { getAllTasks } from '../../../src/service-crud';
+import { getAllTasks } from '../../../src/service-api';
 
 // For a get request we should get the id of the user
-export async function GET(request) {
+export async function POST(request) {
   try {
-    //const { username, password } = await request.json();
+    const { user_id } = await request.json();
 
-    const { user } = await request.json();
+    const taskResponse = await getAllTasks(user_id);
 
-    // Try and get from the database depending on the id
-    if (true) {
-        return NextResponse.json({message: 'Got the user, returning,'});
+    if (taskResponse.status !== 200) {
+      return NextResponse.json({message: taskResponse.message}, {status: 400});
     }
-    else {
-        return NextResponse.json({ message: 'cannot connect to database'}, { status: 400 });
-    }
+    return NextResponse.json({message: "Success getting tasks"}, {status: 200}, {tasks: taskResponse.tasks});
   } catch (error) {
     return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
   }
