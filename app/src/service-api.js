@@ -1,8 +1,6 @@
 import { Task } from './task-objects';
 import {connectToDatabase, addTask, updateTask, getTasks} from '../src/service-crud';
 import {createUser, updateUser, getUser} from '../src/service-crud';
-import { randomUUID } from 'crypto';
-import { describe } from 'node:test';
 
 const fs = require('fs').promises;
 const temp_db = 'app/src/temp_database.json';
