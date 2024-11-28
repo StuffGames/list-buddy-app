@@ -1,6 +1,6 @@
 import { Task } from './task-objects';
-import {connectToDatabase, addTask, updateTask, getTasks} from '../src/service-crud';
-import {createUser, updateUser, getUser} from '../src/service-crud';
+import {connectToDatabase, addTask, updateTask, getTasks} from './service-crud';
+import {createUser, updateUser, getUser} from './service-crud';
 
 const fs = require('fs').promises;
 const temp_db = 'app/src/temp_database.json';

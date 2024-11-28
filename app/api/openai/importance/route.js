@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { daysUntilDeadlin, calculateTaskImportance, getOpenAIEstimates, daysUntilDeadline } from '../../../src/importance_algo';
-import { taskUpdate } from "../../../src/service-api";
+import { daysUntilDeadline, calculateTaskImportance, getOpenAIEstimates, daysUntilDeadline } from '../../_src/openai/importance_algo';
+import { taskUpdate } from "../../_src/service-api";
 
 export async function POST(request) {
     try {
