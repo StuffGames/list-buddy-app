@@ -2,6 +2,7 @@
 
 import { User } from './user-object';
 import { Task } from './task-objects';
+import './db-objects-interface';
 
 /**
  * Indicates a database object that is persistent throughout (only created once).  
@@ -40,33 +41,33 @@ class Database {
     // }
 
     // Database operations below...
-    public async getUser(user_id: Number): Promise<User> {
-        return new User(0, 0, "", "", []);
+    public async getUser(user_id: number): Promise<User> {
+        return new User(0, "");
     }
 
-    public async addUser(user: User): Promise<Object> {
-        return {};
+    public async addUser(user: User): Promise<Response> {
+        return new Response();
     }
 
-    public async updateUser(user_id: Number, data: Object): Promise<Object> {
-        return {};
+    public async updateUser(user_id: number, data: Object): Promise<Response> {
+        return new Response;
     }
 
-    public async getTasks(user: User): Promise<Object> {
-        return {}
+    public async getTasks(user: User): Promise<Response> {
+        return new Response();
     }
-    public async getTask(task_id: Number): Promise<Task> {
-        return new Task(0, 0, new Date(Date.now()), "", "");
+    public async getTask(user_id: number, task_id: number): Promise<Task> {
+        return new Task(0, 0, "", "", "");
     }
 
-    public async addTask(task: Task): Promise<Object> {
+    public async addTask(task: Task): Promise<Response> {
         //;
-        return {};
+        return new Response();
     }
 
-    public async updateTask(task_id: Number, data: Object): Promise<Object> {
+    public async updateTask(task_id: number, data: Object): Promise<Response> {
         //;
-        return {};
+        return new Response();
     }
 
     // etc...

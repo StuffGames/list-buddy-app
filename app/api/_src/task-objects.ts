@@ -1,36 +1,127 @@
 
 class Subtask {
-    Subtask(subtask_id: Number, content: String) {
+    Subtask(subtask_id: number, content: string) {
         let _subtask_id = subtask_id;
         let _content = content;
     }
 }
 
-class Task implements DB_Object {
 
-    private user_id: Number;
-    private task_id: Number;
-    private deadline: Date;
-    private category: String;
-    private description: String;
-    private priority: Number;
-    private difficulty: Number;
-    private importance: Number;
+/**
+ * Represents a task that a user has
+ */
+class Task extends DB_Object {
 
-    constructor(user_id: Number, task_id: Number, deadline: Date = new Date(Date.now()), category: String, description: String,
-        priority:Number =0, difficulty: Number = 0, importance: Number = 0) {
-            this.user_id = user_id;
-            this.task_id = task_id;
-            this.deadline = deadline;
-            this.category = category;
-            this.description = description;
-            this.priority = priority;
-            this.difficulty = difficulty;
-            this.importance = importance;
+    private user_id: number;
+    private _name: string;
+    private _deadline: Date;
+    private _category: string;
+    private _priority: number;
+    private _difficulty: number;
+    private _importance: number;
+    private completed: boolean;
+    
+    public description: string;
+
+    constructor(task_object: Object);
+    constructor(user_id: number, task_id: number, name: string, category: string, description: string, 
+        deadline?: Date, priority?: number, difficulty?: number, importance?: number, completed?: boolean);
+        
+    constructor(objectOrId: Object | number, task_id?: number, name?: string, category?: string, description?: string, 
+        deadline: Date = new Date(Date.now()), priority:number = 0, difficulty: number = 0,
+        importance: number = 0, completed: boolean = false) {
+            super();
+            
+            if (typeof objectOrId === "object") {
+                this.user_id = objectOrId['user_id'];
+                this._id = objectOrId['_id'];
+                this._name = objectOrId['name'];
+                this._deadline = objectOrId['deadline'];
+                this._category = objectOrId['category'];
+                this.description = objectOrId['description'];
+                this._priority = objectOrId['priority'];
+                this._difficulty = objectOrId['difficulty'];
+                this._importance = objectOrId['importance'];
+                this.completed = objectOrId['completed'];
+            }
+            else {
+                this.user_id = objectOrId;
+                this._id = task_id;
+                this._name = name;
+                this._deadline = deadline;
+                this._category = category;
+                this.description = description;
+                this._priority = priority;
+                this._difficulty = difficulty;
+                this._importance = importance;
+                this.completed = completed;
+            }
     }
 
-    getId(): Number {
-        return this.task_id;
+    public get id(): number {
+        return this._id;
+    }
+
+    public get name(): string {
+        return this._name;
+    }
+
+    public set name(name: string) {
+        this._name = name;
+    }
+
+    public get deadline(): Date {
+        return this._deadline;
+    }
+
+    public get category(): string {
+        return this._category;
+    }
+
+    public get priority(): number {
+        return this._priority;
+    }
+    
+    public get difficulty(): number {
+        return this._difficulty;
+    }
+
+    public get importance(): number {
+        return this._importance;
+    }
+
+    public get isComplete(): boolean {
+        return this.completed;
+    }
+
+    public set isComplete(completed: boolean) {
+        this.completed = completed;
+    }
+
+    /**
+     * Switches completed flag to opposite value.  
+     * If completed is true, then it gets switched to false.  
+     * If completed is false, then it gets switched to true;
+     */
+    public switchComplete() {
+        this.completed = !this.completed;
+    }
+
+    public getId(): number {
+        return this._id;
+    }
+
+    public toJSON(): Object {
+        return {
+            _id: this._id,
+            user_id: this.user_id,
+            deadline: this._deadline,
+            category: this._category,
+            description: this.description,
+            priority: this._priority,
+            difficulty: this._difficulty,
+            importance: this._importance
+        };
     }
 }
 
