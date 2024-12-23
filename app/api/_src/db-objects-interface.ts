@@ -21,12 +21,12 @@ interface IDB_Object {
  * Represents an Object that is transformed from data in a specific Database
  */
 abstract class DB_Object {
-    protected _id: number;
+    protected _id: string;
 
     /**
      * Returns the unique ID of this object
      */
-    abstract get id(): number;
+    abstract get id(): string;
     
     // fromJSON(obj: Object);
 

@@ -12,7 +12,7 @@ class Subtask {
  */
 class Task extends DB_Object {
 
-    private user_id: number;
+    private user_id: string;
     private _name: string;
     private _deadline: Date;
     private _category: string;
@@ -24,10 +24,10 @@ class Task extends DB_Object {
     public description: string;
 
     constructor(task_object: Object);
-    constructor(user_id: number, task_id: number, name: string, category: string, description: string, 
+    constructor(user_id: string, task_id: string, name: string, category: string, description: string, 
         deadline?: Date, priority?: number, difficulty?: number, importance?: number, completed?: boolean);
         
-    constructor(objectOrId: Object | number, task_id?: number, name?: string, category?: string, description?: string, 
+    constructor(objectOrId: Object | string, task_id?: string, name?: string, category?: string, description?: string, 
         deadline: Date = new Date(Date.now()), priority:number = 0, difficulty: number = 0,
         importance: number = 0, completed: boolean = false) {
             super();
@@ -58,7 +58,7 @@ class Task extends DB_Object {
             }
     }
 
-    public get id(): number {
+    public get id(): string {
         return this._id;
     }
 
@@ -107,7 +107,7 @@ class Task extends DB_Object {
         this.completed = !this.completed;
     }
 
-    public getId(): number {
+    public getId(): string {
         return this._id;
     }
 

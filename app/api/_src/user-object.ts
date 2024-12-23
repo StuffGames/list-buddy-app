@@ -9,7 +9,7 @@ class User extends DB_Object{
     private star_count: number;
     private _username: string;
     private password: string;
-    private tasks: number[];
+    private tasks: string[];
     
     /**
      * Creates a user object from the input object
@@ -27,9 +27,9 @@ class User extends DB_Object{
      * @param password OPTIONAL (not needed for now)
      * @param tasks List of task_ids
      */
-    constructor(id: number, username: string, password?: string, star_count?: number, tasks?: number[]);
+    constructor(id: string, username: string, password?: string, star_count?: number, tasks?: string[]);
 
-    constructor(objectOrId: Object | number, username?: string, password?: string, star_count: number = 0, tasks: number[] = []) {
+    constructor(objectOrId: Object | string, username?: string, password?: string, star_count: number = 0, tasks: string[] = []) {
         super();
 
         if (typeof objectOrId === 'object') {
@@ -48,7 +48,7 @@ class User extends DB_Object{
         }
     }
 
-    public get id(): number {
+    public get id(): string {
         return this._id;
     }
 
@@ -64,7 +64,7 @@ class User extends DB_Object{
         this.star_count = count;
     }
     
-    public get task_ids(): number[] {
+    public get task_ids(): string[] {
         return this.tasks;
     }
     
@@ -72,7 +72,7 @@ class User extends DB_Object{
         this.tasks.push(task.id);
     }
 
-    public getId(): number {
+    public getId(): string {
         return this._id;
     }
 
