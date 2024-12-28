@@ -1,22 +1,27 @@
+import { ObjectId } from 'mongodb';
+import { DB_Object, DB_UpdateBuilder } from './db-interfaces';
 import { Task } from './task-objects';
 
 /**
  * Represents a User and contains information such as username, star_count, etc.
  */
-class User extends DB_Object{
+export class User extends DB_Object{
 
-    // private user_id: number;
     private star_count: number;
     private _username: string;
     private password: string;
-    private tasks: string[];
+
+    // TODO: change this to be a Task id array (rename to task_ids) and maybe add a new field that is just a Task array (named tasks)
+    private _task_ids: string[];
+
+    private _tasks: Task[];
     
     /**
      * Creates a user object from the input object
      * 
      * @param user_object JSON object to get values from
      */
-    constructor(user_object: Object);
+    constructor(user_object: object);
     
     /**
      * Creates a user object from the inputted variables
@@ -37,14 +42,14 @@ class User extends DB_Object{
             this.star_count = objectOrId['star_count'];
             this._username = objectOrId['username'];
             if (password !== undefined) this.password = objectOrId['password'];
-            this.tasks = tasks;
+            this._task_ids = tasks;
         }
         else {
-            this._id = objectOrId;
+            if (objectOrId !== "") this._id = objectOrId;
             this.star_count = star_count;
             this._username = username;
             if (password !== undefined) this.password = password;
-            this.tasks = tasks;
+            this._task_ids = tasks;
         }
     }
 
@@ -65,11 +70,11 @@ class User extends DB_Object{
     }
     
     public get task_ids(): string[] {
-        return this.tasks;
+        return this._task_ids;
     }
     
     public addTask(task: Task) {
-        this.tasks.push(task.id);
+        this._task_ids.push(task.id);
     }
 
     public getId(): string {
@@ -77,14 +82,80 @@ class User extends DB_Object{
     }
 
     public toJSON(): Object {
-        return {
-            _id: this._id,
+
+        const result = {
             username: this.username,
             password: this.password,
             star_count: this.star_count,
-            tasks: this.tasks
+            tasks: this._task_ids
         };
+
+        if(this._id !== undefined) {
+            result['_id'] = this._id;
+        }
+
+        return result;
     }
 }
 
-export { User };
+export class UserResponse {
+    private _status: number;
+    private _statusText: string;
+    private _user_id: string;
+
+    constructor(params: object);
+    constructor(status: number, statusText: string, user_id: string);
+    constructor(paramOrStatus: object | number, statusText?: string, user_id?: string) {
+        if (typeof(paramOrStatus) == 'object') {
+            this._status = paramOrStatus['status'];
+            this._statusText = paramOrStatus['statusText'];
+            this._user_id = paramOrStatus['user_id'];
+        }
+        else{
+            this._status = paramOrStatus;
+            this._statusText = statusText;
+            this._user_id = user_id;
+        }
+    }
+    public get status(){
+        return this._status;
+    }
+    public get statusText(){
+        return this._statusText;
+    }
+    public get user_id(){
+        return this._user_id;
+    }
+}
+
+// TODO: possible make this either interface or abstract class and have it be inherited by something like UserUpdateBuilderMongoDB or something idk
+export class UserUpdateBuilder extends DB_UpdateBuilder {
+    constructor() {
+        super();
+    }
+
+    public incrementStarCount(amount: number): UserUpdateBuilder {
+        this.$inc("star_count", amount);
+        return this;
+    }
+
+    public setStarCount(amount: number): UserUpdateBuilder {
+        this.$set("star_count", amount);
+        return this;
+    }
+
+    public setUsername(newUsername: string): UserUpdateBuilder {
+        this.$set("username", newUsername);
+        return this;
+    }
+
+    public setPassword(newPassword: string): UserUpdateBuilder {
+        this.$set("password", newPassword);
+        return this;
+    }
+
+    public addTask(newTaskId: string): UserUpdateBuilder {
+        this.$push("tasks", new ObjectId(newTaskId));
+        return this;
+    }
+}

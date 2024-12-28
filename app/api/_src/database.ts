@@ -1,29 +1,26 @@
 // crucial imports or something
-import { MongoClient, ServerApiVersion, Db } from 'mongodb';
-import { User } from './user-object';
-import { Task } from './task-objects';
-import './db-objects-interface';
-
-// const { MongoClient, ServerApiVersion } = require('mongodb')
-// const { User } = require('./user-object');
-// const { Task } = require('./task-objects');
+import { MongoClient, ServerApiVersion, Db, ObjectId } from 'mongodb';
+import { User, UserResponse, UserUpdateBuilder } from './user-object';
+import { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
+import { Database } from './db-interfaces';
 
 // URI to connect to the database, contained within secrets (.env)
 const uri = process.env.MONGO_URI;
 const db_name = process.env.DB_NAME;
+
+// TODO: TURN THE COLLECTIONS INTO SEPARATE ABSTRACTIONS?
 const user_collection_name = process.env.USER_COLLECTION;
 const task_collection_name = process.env.TASK_COLLECTION;
 
 /**
- * Indicates a database object that is persistent throughout (only created once).  
- * Also includes database CRUD functions to do cool stuffff....
+ * MongoDB database that integrates MongoDB Atlas functionality
  */
-export class Database {
+export class MongoDatabase implements Database {
 
     /**
      * Represents an instance of the database
      */
-    private static _instance: Database;
+    static #instance: Database;
     
     /**
      * Represents a specific database, whether MongoDB or local .json
@@ -35,11 +32,29 @@ export class Database {
      */
     private client: MongoClient;
 
+    // TODO: Add collection abstraction for MongoDB Collections maybe?
+    private userCollection;
+    private taskCollection;
+
     /**
      * Private constructor to avoid creation from `new` operator
      */
     private constructor() {
-        // Attempt to connect to database, re-attempt, otherwise there was an error, maybe default to local database
+        this.connectToDatabase();
+    }
+
+    /**
+     * Get the current running instance of the Database object
+     */
+    public static get instance(): Database {
+        if (!MongoDatabase.#instance) {
+            MongoDatabase.#instance = new MongoDatabase();
+        }
+
+        return MongoDatabase.#instance;
+    }
+
+    public connectToDatabase(): void {
         try {
             this.client = new MongoClient(uri, {
                 serverApi: {
@@ -49,6 +64,8 @@ export class Database {
                 }
             });
             this.db = this.client.db(db_name);
+            this.userCollection = this.db.collection(user_collection_name);
+            this.taskCollection = this.db.collection(task_collection_name);
         }
         catch (error) {
             // Now do temp database?
@@ -56,50 +73,121 @@ export class Database {
         }
     }
 
-    public static get instance(): Database {
-        if (!Database.instance) {
-            Database._instance = new Database();
+    // Database operations below...
+
+    public async getUser(user_id: string): Promise<User> {
+        const user = await this.userCollection.findOne({"_id": new ObjectId(user_id)});
+        if (user === null) {
+            console.log("user not found");
+            // Throw error instead, then can be dealed with by upper level code
+            return null;
+        }
+        
+        const userResult = new User(user_id, user.username, user.password, user.star_count, user.tasks.map(t => t.toString()));
+        
+        // TODO: Consider later use case for this
+        // const tasks: Task[] = await this.getTasks(userResult);
+        // tasks.forEach(task => userResult.addTask(task));
+
+        return userResult;
+    }
+
+    public async addUser(user: User): Promise<UserResponse> {
+        const result = await this.userCollection.insertOne(user.toJSON());
+
+        if (result.acknowledged) {
+            console.log(result.insertedId);
+            return new UserResponse({status: 200, statusText: "Inserted", user_id: result.insertedId.toString()});
+        }
+        return new UserResponse({status: 400, statusText: "Failed"});
+    }
+
+    public async updateUser(user_id: string, update: UserUpdateBuilder): Promise<UserResponse> {
+        const result = await this.userCollection.updateOne({"_id": new ObjectId(user_id)}, update.getUpdate());
+        if (!result.acknowledged) {
+            return new UserResponse({status: 400, statusText: "failure"});
+        }
+        return new UserResponse({status: 200, statusText: "success", user_id: user_id});
+    }
+    
+    public async getTasks(user: User): Promise<Task[]> {
+        const task_ids: ObjectId[] = user.task_ids.map(task_id => new ObjectId(task_id));
+        const tasks: Task[] = [];
+
+        // TODO: consider updating the task object array of User?
+        const db_tasks = await this.taskCollection.find({"user_id": new ObjectId(user.id)});
+        for await (const db_task of db_tasks) {
+            tasks.push(new Task(db_task));
         }
 
-        return Database._instance;
+        return tasks;
     }
 
-    // public get db() {
-    //     return this.#db;
-    // }
+    // TASKS OPERATIONS
+    public async getTask(user_id: string, task_id: string | ObjectId): Promise<Task> {
+        const task = await this.taskCollection.findOne({"_id": (typeof(task_id) === 'string') ? new ObjectId(task_id) : task_id});
 
-    // Database operations below...
-    // TODO: Add collection abstraction for MongoDB Collections
-    public async getUser(user_id: string): Promise<User> {
-        const userCollection = this.db.collection(user_collection_name);
-        const user = await userCollection.findOne({id: user_id});
-        console.log(user);
-        return new User('0', "");
+        if (task === null) {
+            console.log("Error getting task. ID may be incorrect.");
+            return null;
+        }
+
+        return new Task(
+            (typeof(task_id) === 'string') ? task_id : task_id.toString(),
+            user_id, 
+            task.name, task.category, task.description, task.deadline,
+            task.priority, task.difficulty, task.importance, task.completed
+        );
+    }
+    
+    public async addTask(task: Task): Promise<TaskResponse> {
+        const result = await this.taskCollection.insertOne(task.toJSON());
+        if (!result.acknowledged) {
+            return new TaskResponse({status: 400, statusText: "Failed"});
+        }
+        // -----------------------------------------------------
+        // ADDS TASK TO THE USER AS WELL, consider dropping if we have other code do it instead
+        // TODO: Also apparently result.insertedId returns undefined if it is generated by the server??? idk , fix later
+        const userResult = await this.updateUser(task.user_id, new UserUpdateBuilder().addTask(result.insertedId.toString()));
+        if (userResult.status != 200) {
+            return new TaskResponse({
+                status: 400,
+                statusText: "Error inserting into user",
+                
+            });
+        }
+        // ------------------------------------------------------
+
+        return new TaskResponse({status: 200, statusText: "Inserted", task_id: result.insertedId.toString()});
     }
 
-    public async addUser(user: User): Promise<Response> {
-        return new Response();
+    // CONSIDERING DROPPING, idk...
+    public async addTaskToUser(user_id: string, task: Task): Promise<TaskResponse> {
+        if (user_id !== task.user_id) {
+            return new TaskResponse({
+                status: 400,
+                statusText: "The user id for the task and user do not match"
+            });
+        }
+
+        const userResult = await this.updateUser(user_id, new UserUpdateBuilder().addTask(task.id));
+        if (userResult.status != 200) {
+            return new TaskResponse({
+                status: 400,
+                statusText: "Error inserting into user",
+                
+            });
+        }
+
+        return new TaskResponse({status: 200, statusText: "Success"});
     }
 
-    public async updateUser(user_id: number, data: Object): Promise<Response> {
-        return new Response;
-    }
-
-    public async getTasks(user: User): Promise<Response> {
-        return new Response();
-    }
-    public async getTask(user_id: number, task_id: number): Promise<Task> {
-        return new Task('0', '0', "", "", "");
-    }
-
-    public async addTask(task: Task): Promise<Response> {
-        //;
-        return new Response();
-    }
-
-    public async updateTask(task_id: number, data: Object): Promise<Response> {
-        //;
-        return new Response();
+    public async updateTask(task_id: string, update: TaskUpdateBuilder): Promise<TaskResponse> {
+        const result = await this.taskCollection.updateOne({"_id": new ObjectId(task_id)}, update.getUpdate());
+        if (!result.acknowledged) {
+            return new TaskResponse({status: 400, statusText: "failure"});
+        }
+        return new TaskResponse({status: 200, statusText: "success", task_id: task_id});
     }
 
     // etc...
