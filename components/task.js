@@ -1,4 +1,3 @@
-import { randomUUID } from 'crypto';
 import React, { useState, useEffect } from 'react'; // Import useState
 
 const TaskPopup = ({ close, addNewTask }) => {
@@ -13,8 +12,8 @@ const TaskPopup = ({ close, addNewTask }) => {
     // Fetch user_id from sessionStorage when the component mounts
     useEffect(() => {
       const user = JSON.parse(sessionStorage.getItem('user')); // Assuming user is stored as a JSON string
-      if (user && user.user_id) {
-        setUserId(user.user_id); // Set user_id if it exists
+      if (user && user._id) {
+        setUserId(user._id); // Set user_id if it exists
         setUserTaskLength(user.tasks.length);
       }
     }, []); // Empty dependency array means this runs once on mount
@@ -23,7 +22,6 @@ const TaskPopup = ({ close, addNewTask }) => {
       const newTask = {
         name: taskName,
         user_id: userId,
-        task_id: self.crypto.randomUUID(),
         category: taskCategory,
         priority: taskPriority,
         description: taskDescription,
@@ -36,7 +34,7 @@ const TaskPopup = ({ close, addNewTask }) => {
       };
       
       try {
-        const response2 = await fetch('/api/openai/importance', {
+        const importanceResponse = await fetch('/api/openai/importance', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json', // Specify that we're sending JSON
@@ -44,9 +42,9 @@ const TaskPopup = ({ close, addNewTask }) => {
           body: JSON.stringify(newTask), // Convert newTask object to JSON string
         });
 
-        const responseTask = await response2.json();
+        const responseTask = await importanceResponse.json();
 
-        newTask.importance = responseTask.score;
+        newTask.importance = Number(responseTask.score);
 
         // Send a POST request to the internal API
         const response = await fetch('/api/tasks/createTask', {
