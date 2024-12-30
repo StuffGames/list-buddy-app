@@ -1,4 +1,4 @@
-import { MongoDatabase } from './database';
+import { MongoDatabase } from './mongo-database';
 import { User, UserUpdateBuilder } from './user-object';
 import { Task, TaskUpdateBuilder } from './task-objects';
 import { Database } from './db-interfaces';

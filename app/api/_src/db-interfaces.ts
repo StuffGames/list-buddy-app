@@ -1,5 +1,10 @@
-import { User, UserResponse, UserUpdateBuilder } from './user-object';
-import { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
+import type { User, UserResponse, UserUpdateBuilder } from './user-object';
+import type { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
+import type {
+    DatabaseConnectionError,
+    InvalidUserError,
+    InvalidTaskError
+} from './exceptions';
 
 /**
  * Database Interface for interaction between different kinds of databases.  
@@ -12,13 +17,32 @@ export interface Database {
 
     /**
      * Connects to database if needed
+     * 
+     * @throws {DatabaseConnectionError}
      */
     connectToDatabase(): void;
+
+    /**
+     * Returns true if the database is connected
+     */
+    isConnectedToDb(): boolean;
+
+    /**
+     * Checks if the user with specified username exists in the database
+     * @param username The username to check
+     * 
+     * @throws {InvalidUserError}
+     */
+    userExists(username: string): Promise<UserResponse>;
+
+    // taskExists(): Promise<boolean>;
 
     /**
      * Gets a User object that represents a user in the database
      * @param user_id The ObjectId of the user we want
      * @returns User object containing all data from the database
+     * 
+     * @throws {InvalidUserError}
      */
     getUser(user_id: string): Promise<User>;
 
@@ -43,6 +67,8 @@ export interface Database {
      * 
      * @param user User to get tasks from
      * @returns List of Tasks from specified user as Task objects
+     * 
+     * @throws {InvalidTaskError}
      */
     getTasks(user: User): Promise<Task[]>;
 
@@ -52,6 +78,8 @@ export interface Database {
      * @param user_id ID of the user that the has the task
      * @param task_id ID of the task to retrieve
      * @returns Task object representing task from database, null if unsuccessful
+     * 
+     * @throws {InvalidTaskError}
      */
     getTask(user_id: string, task_id: string): Promise<Task>;
 

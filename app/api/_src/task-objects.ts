@@ -150,7 +150,7 @@ export class Task extends DB_Object {
         };
         
         if (this.id !== undefined) {
-            result['_id'] == this.id
+            result['_id'] = this.id;
         }
 
         return result;

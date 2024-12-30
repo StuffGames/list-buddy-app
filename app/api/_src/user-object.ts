@@ -81,6 +81,10 @@ export class User extends DB_Object{
         return this._id;
     }
 
+    public checkUserAndPass(username: string, password: string): boolean {
+        return this._username === username && this.password == password;;
+    }
+
     public toJSON(): Object {
 
         const result = {

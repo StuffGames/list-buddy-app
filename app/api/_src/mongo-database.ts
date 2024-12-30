@@ -4,6 +4,12 @@ import { User, UserResponse, UserUpdateBuilder } from './user-object';
 import { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
 import { Database } from './db-interfaces';
 
+import {
+    DatabaseConnectionError,
+    InvalidUserError,
+    InvalidTaskError
+} from './exceptions';
+
 // URI to connect to the database, contained within secrets (.env)
 const uri = process.env.MONGO_URI;
 const db_name = process.env.DB_NAME;
@@ -36,6 +42,8 @@ export class MongoDatabase implements Database {
     private userCollection;
     private taskCollection;
 
+    private connected: boolean = false;
+
     /**
      * Private constructor to avoid creation from `new` operator
      */
@@ -66,11 +74,25 @@ export class MongoDatabase implements Database {
             this.db = this.client.db(db_name);
             this.userCollection = this.db.collection(user_collection_name);
             this.taskCollection = this.db.collection(task_collection_name);
+
+            this.connected = true;
         }
         catch (error) {
-            // Now do temp database?
             console.error("Could get the database from client", error);
+            throw new DatabaseConnectionError("Could not Connect to MongoDB database");
         }
+    }
+
+    public isConnectedToDb(): boolean {
+        return this.connected;
+    }
+
+    public async userExists(username: string): Promise<UserResponse> {
+        const user = await this.userCollection.findOne({"username": username});
+        if (user === null) {
+            throw new InvalidUserError(`User "${username}" does not exist`);
+        }
+        return new UserResponse(200, "Successfully got user", user._id.toString());
     }
 
     // Database operations below...
@@ -78,9 +100,7 @@ export class MongoDatabase implements Database {
     public async getUser(user_id: string): Promise<User> {
         const user = await this.userCollection.findOne({"_id": new ObjectId(user_id)});
         if (user === null) {
-            console.log("user not found");
-            // Throw error instead, then can be dealed with by upper level code
-            return null;
+            throw new InvalidUserError(`User with ID: '${user_id}', does not exist`);
         }
         
         const userResult = new User(user_id, user.username, user.password, user.star_count, user.tasks.map(t => t.toString()));
@@ -104,7 +124,7 @@ export class MongoDatabase implements Database {
 
     public async updateUser(user_id: string, update: UserUpdateBuilder): Promise<UserResponse> {
         const result = await this.userCollection.updateOne({"_id": new ObjectId(user_id)}, update.getUpdate());
-        if (!result.acknowledged) {
+        if (!result.acknowledged || result.matchedCount === 0 || result.modifiedCount === 0) {
             return new UserResponse({status: 400, statusText: "failure"});
         }
         return new UserResponse({status: 200, statusText: "success", user_id: user_id});
@@ -117,6 +137,11 @@ export class MongoDatabase implements Database {
         // TODO: consider updating the task object array of User?
         const db_tasks = await this.taskCollection.find({"user_id": new ObjectId(user.id)});
         for await (const db_task of db_tasks) {
+            if (db_task == null) {
+                throw new InvalidTaskError("Task does not exist");
+            }
+            db_task['_id'] = db_task['_id'].toString();
+            db_task['user_id'] = db_task['user_id'].toString();
             tasks.push(new Task(db_task));
         }
 
@@ -129,7 +154,7 @@ export class MongoDatabase implements Database {
 
         if (task === null) {
             console.log("Error getting task. ID may be incorrect.");
-            return null;
+            throw new InvalidTaskError(`Error getting task. ID: '${task_id}' may be incorrect`);
         }
 
         return new Task(
@@ -152,8 +177,7 @@ export class MongoDatabase implements Database {
         if (userResult.status != 200) {
             return new TaskResponse({
                 status: 400,
-                statusText: "Error inserting into user",
-                
+                statusText: "Error inserting into user"
             });
         }
         // ------------------------------------------------------
@@ -184,7 +208,7 @@ export class MongoDatabase implements Database {
 
     public async updateTask(task_id: string, update: TaskUpdateBuilder): Promise<TaskResponse> {
         const result = await this.taskCollection.updateOne({"_id": new ObjectId(task_id)}, update.getUpdate());
-        if (!result.acknowledged) {
+        if (!result.acknowledged || result.matchedCount === 0 || result.modifiedCount === 0) {
             return new TaskResponse({status: 400, statusText: "failure"});
         }
         return new TaskResponse({status: 200, statusText: "success", task_id: task_id});
