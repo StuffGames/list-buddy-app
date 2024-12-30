@@ -30,7 +30,7 @@ const HomePage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ user_id: userData.user_id }), // Send the user_id in the request body
+          body: JSON.stringify({ user_id: userData._id }), // Send the user_id in the request body
         });
 
         if (!response.ok) {

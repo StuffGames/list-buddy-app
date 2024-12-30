@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { daysUntilDeadlin, calculateTaskImportance, getOpenAIEstimates, daysUntilDeadline } from '../../../src/importance_algo';
-import { taskUpdate } from "../../../src/service-api";
+import { daysUntilDeadline, calculateTaskImportance } from '../../_src/openai/importance_algo';
 
 export async function POST(request) {
     try {
@@ -18,13 +17,15 @@ export async function POST(request) {
         });
         
         if (importanceResponse.status !== 200) {
-            return NextResponse.json({message: importanceResponse.message}, {status: 400});
+          console.log(importanceResponse);
+          return NextResponse.json({message: importanceResponse.message}, {status: 400});
         }
         
         const score = importanceResponse.score;
         return NextResponse.json({ message: 'Importance Success', score}, {status: 200});
     
       } catch (error) {
-        return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
+        console.error(error);
+        return NextResponse.json({ message: error.message }, { status: 500 });
       }
 }

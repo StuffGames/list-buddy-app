@@ -1,10 +1,15 @@
 // app/api/login/route.js
 import { NextResponse } from 'next/server';
-import { login } from '../../src/service-api';
+import { login } from '../_src/service-api';
+// import ApiResponse as a type for when switching to TypeScript
 
 export async function POST(request) {
   try {
     const { username, password } = await request.json();
+
+    if (username === undefined || password === undefined) {
+      return NextResponse.json({ message: "Username or Password missing from request"}, {status: 500});
+    }
 
     const response = await login(username, password);
 
@@ -14,9 +19,12 @@ export async function POST(request) {
       const user = response.user;
       return NextResponse.json({ message: 'Login successful', user });
     } else {
-      return NextResponse.json({ message: 'Invalid username or password' }, { status: 400 });
+      // More than likely message will be "Invalid username or password"
+      console.log(response);
+      return NextResponse.json({ message: response.message }, { status: 400 });
     }
   } catch (error) {
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
