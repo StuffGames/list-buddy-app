@@ -8,7 +8,6 @@ export async function POST(request) {
     /*
         Response: {
             user_id,
-            task_id,
             deadline,
             name,
             category,
@@ -25,12 +24,14 @@ export async function POST(request) {
     const taskResponse = await createTask(response);
 
     if (taskResponse.status !== 200) {
+      console.error(taskResponse);
       return NextResponse.json({message: taskResponse.message}, {status: 400});
     }
     
     return NextResponse.json({ message: 'Task Adding Success' });
 
   } catch (error) {
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }

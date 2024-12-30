@@ -20,12 +20,14 @@ export async function POST(request) {
     const taskResponse = await taskUpdate(response);
 
     if (taskResponse.status !== 200) {
+      console.log(taskResponse);
       return NextResponse.json({message: taskResponse.message}, {status: 400});
     }
     
-    return NextResponse.json({ message: 'Task Editing Success' });
+    return NextResponse.json({ message: 'Task Editing Success' }, { status: 200 });
 
   } catch (error) {
-    return NextResponse.json({ message: 'An error occurred' }, { status: 500 });
+    console.error(error);
+    return NextResponse.json({ message: error.message }, { status: 500 });
   }
 }
