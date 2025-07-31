@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'; // Import useState
+import React, { useState, useEffect } from 'react';
 
 const TaskPopup = ({ close, addNewTask }) => {
     const [taskName, setTaskName] = useState('');
@@ -6,17 +6,17 @@ const TaskPopup = ({ close, addNewTask }) => {
     const [taskPriority, setTaskPriority] = useState(5);
     const [taskDescription, setTaskDescription] = useState('');
     const [taskDeadline, setTaskDeadline] = useState('');
-    const [userId, setUserId] = useState(null); // State to hold the user_id
+    const [userId, setUserId] = useState(null);
     const [userTaskLength, setUserTaskLength] = useState(null);
   
     // Fetch user_id from sessionStorage when the component mounts
     useEffect(() => {
-      const user = JSON.parse(sessionStorage.getItem('user')); // Assuming user is stored as a JSON string
+      const user = JSON.parse(sessionStorage.getItem('user'));
       if (user && user._id) {
-        setUserId(user._id); // Set user_id if it exists
+        setUserId(user._id);
         setUserTaskLength(user.tasks.length);
       }
-    }, []); // Empty dependency array means this runs once on mount
+    }, []);
 
     const handleSubmit = async () => {
       const newTask = {
@@ -37,9 +37,9 @@ const TaskPopup = ({ close, addNewTask }) => {
         const importanceResponse = await fetch('/api/openai/importance', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Specify that we're sending JSON
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newTask), // Convert newTask object to JSON string
+          body: JSON.stringify(newTask),
         });
 
         const responseTask = await importanceResponse.json();
@@ -50,9 +50,9 @@ const TaskPopup = ({ close, addNewTask }) => {
         const response = await fetch('/api/tasks/createTask', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json', // Specify that we're sending JSON
+            'Content-Type': 'application/json',
           },
-          body: JSON.stringify(newTask), // Convert newTask object to JSON string
+          body: JSON.stringify(newTask),
         });
   
         if (!response.ok) {
@@ -60,7 +60,6 @@ const TaskPopup = ({ close, addNewTask }) => {
           throw new Error('Failed to create task');
         }
   
-        // Optionally, you can parse the response if needed
         const result = await response.json();
         console.log('Task created successfully:', result);
   
@@ -68,11 +67,13 @@ const TaskPopup = ({ close, addNewTask }) => {
         //addNewTask(newTask);
   
         // Close the modal
+        // TODO: This causes the whole page to reload when exiting modal.
+        //    This was intended initially to reload the text in the bubbles but its annoying and theres a better way.
+        //    Maybe have some event update all frontend ui components that use that text whenever the server updates the text.
         close();
         window.location.href = '/home';
       } catch (error) {
         console.error('Error creating task:', error);
-        // Optionally, you could display an error message to the user here
       }
     };
   
