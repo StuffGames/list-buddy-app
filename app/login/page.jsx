@@ -1,3 +1,4 @@
+// Look at page.js for comment details
 'use client';
 
 import { useState } from 'react';
@@ -10,11 +11,10 @@ const Login=() => {
     const [loading, setLoading] = useState(false);
   
     const handleSubmit = async (e) => {
-      e.preventDefault(); // Prevent the form from submitting the default way
+      e.preventDefault();
       setLoading(true);
       setError('');
   
-      // Prepare the request body
       const credentials = {
         username,
         password
@@ -31,19 +31,17 @@ const Login=() => {
         });
   
         if (!response.ok) {
-          // Handle error from the backend (invalid credentials, etc.)
           const data = await response.json();
           setError(data.message || 'Something went wrong.');
           setLoading(false);
           return;
         }
   
-        // If successful, handle the success (e.g., redirect, store token, etc.)
         const data = await response.json();
-        // You can store the token or user info in localStorage, sessionStorage, or cookies
+
         sessionStorage.setItem("user", JSON.stringify(data.user));
         console.log('Logged in successfully:', data);
-        // Redirect to a protected page
+
         window.location.href = '/home';
 
       } catch (err) {
@@ -56,7 +54,6 @@ const Login=() => {
     return (
         <div className="h-screen bg-zinc-100 relative overflow-hidden">
 
-            {/* Form Content */}
             <div className="flex items-center justify-center h-full relative z-10">
                 <form
                     onSubmit={handleSubmit} 
@@ -70,7 +67,6 @@ const Login=() => {
                     </h1>
                     <p className="text-center text-sm mb-6 text-slate-500">Login here:</p>
 
-                    {/* Username Input */}
                     <div className="mb-4">
                         <label
                             htmlFor="username"
@@ -91,7 +87,6 @@ const Login=() => {
                         />
                     </div>
 
-                    {/* Password Input*/}
                     <div className="mb-4">
                         <label
                             htmlFor="password"
@@ -112,9 +107,7 @@ const Login=() => {
                         />
                     </div>
 
-                    {/* Remember Me and Sign Up Section */}
                     <div className="mb-4 flex justify-between items-center">
-                    {/* Remember Me */}
                     <div className="flex items-center">
                         <input
                         className="w-4 h-4 mr-2"
@@ -129,23 +122,20 @@ const Login=() => {
                         </label>
                     </div>
 
-                    {/* Sign Up Link */}
                     <a href="#" className="text-sm text-blue-500 hover:underline">
                         Sign Up
                     </a>
                     </div>
 
-                    {/* Submit Button */}
                     <div className="mb-6">
                         <input
                             className="w-full p-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600"
                             type="submit"
                             value={loading ? 'Logging in...' : 'Submit'}
-                            disabled={loading} // Disable button while loading
+                            disabled={loading}
                         />
                     </div>
 
-                    {/* Error Message */}
                     {error && <p className="text-center text-red-500">{error}</p>}
                     
                     <div className="text-center">

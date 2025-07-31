@@ -34,17 +34,14 @@ export default function TaskView({ task }) {
         body: JSON.stringify({user_id: task.user_id, task_id: task._id, description: task.description, completed: task.completed }),
       });
 
-      // Check if the response was successful
       if (!response.ok) {
         throw new Error('Failed to simplify task');
       }
 
-      // Parse the response as JSON
       const result = await response.json();
 
       // Update the simplified task in the state
       setSimplifiedTask(result.fullText);
-      // console.log(simplifiedTask);
     } catch (error) {
       console.error('Error:', error);
       alert('Error simplifying task');

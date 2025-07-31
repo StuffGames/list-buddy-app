@@ -7,9 +7,9 @@ const HomePage = () => {
   const [tasks, setTasks] = useState([]);
   const [showActive, setShowActive] = useState(true);
   const [showCompleted, setShowCompleted] = useState(true);
-  const [modalOpen, setModalOpen] = useState(false); // TaskPopup modal
-  const [taskViewOpen, setTaskViewOpen] = useState(false); // TaskView modal
-  const [selectedTask, setSelectedTask] = useState(null); // Currently selected task
+  const [modalOpen, setModalOpen] = useState(false);
+  const [taskViewOpen, setTaskViewOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -30,7 +30,7 @@ const HomePage = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ user_id: userData._id }), // Send the user_id in the request body
+          body: JSON.stringify({ user_id: userData._id }),
         });
 
         if (!response.ok) {
@@ -44,12 +44,12 @@ const HomePage = () => {
         setError('Failed to get initial data.');
         console.error('Error fetching tasks:', err);
       } finally {
-        setLoading(false); // Set loading to false once the data is fetched or an error occurs
+        setLoading(false);
       }
     };
 
     starterData();
-  }, []); // Empty dependency array ensures this runs only once after the component mounts
+  }, []);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -62,7 +62,7 @@ const HomePage = () => {
   const handleToggleActive = () => setShowActive(!showActive);
   const handleToggleCompleted = () => setShowCompleted(!showCompleted);
 
-  // Handler for checkbox change
+
   const handleCheckboxChange = (taskName) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
@@ -77,13 +77,11 @@ const HomePage = () => {
     );
   };
 
-  // Open TaskView modal for a specific task
   const openTaskView = (task) => {
     setSelectedTask(task);
     setTaskViewOpen(true);
   };
 
-  // Close TaskView modal
   const closeTaskView = () => {
     setTaskViewOpen(false);
     setSelectedTask(null);
@@ -93,13 +91,12 @@ const HomePage = () => {
   const activeTasks = tasks.filter((task) => !task.completed);
   const completedTasks = tasks.filter((task) => task.completed);
 
+  // TODO: Separate some of this stuff out into components, wtf am I looking at
   return (
     <div className="flex min-h-screen">
-      {/* Left Panel */}
       <div className="w-1/3 bg-white border-r p-4 min-h-screen">
         <h1 className="text-3xl font-bold text-blue-500 mb-4">ListBuddy</h1>
 
-        {/* Active Tasks */}
         <div>
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold text-black">Active tasks:</h2>
@@ -126,7 +123,6 @@ const HomePage = () => {
           )}
         </div>
 
-        {/* Completed Tasks */}
         <div className="mt-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold text-black">Completed tasks:</h2>
@@ -159,7 +155,6 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* Right Panel (Grid of Tasks) */}
       <div className="flex-1 bg-gray-100 p-4 grid gap-4 grid-cols-5">
         {activeTasks
           .sort((a, b) => a.importance - b.importance) // Sort by importance in ascending order
@@ -215,7 +210,6 @@ const HomePage = () => {
           })}
       </div>
 
-      {/* TaskView Modal */}
       {taskViewOpen && selectedTask && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
@@ -230,7 +224,6 @@ const HomePage = () => {
   </div>
 )}
 
-      {/* Add New Task Button */}
       <div className="absolute bottom-4 right-4">
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-lg hover:bg-blue-600"
@@ -240,7 +233,6 @@ const HomePage = () => {
         </button>
       </div>
 
-      {/* TaskPopup Modal */}
       {modalOpen && (
         <TaskPopup close={() => setModalOpen(false)} addNewTask={addNewTask} />
       )}

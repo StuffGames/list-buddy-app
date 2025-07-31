@@ -1,3 +1,4 @@
+// This is the exact same as the login/page.jsx, what is happening
 'use client';
 
 import { useState } from 'react';
@@ -10,7 +11,7 @@ const Login=() => {
     const [loading, setLoading] = useState(false);
   
     const handleSubmit = async (e) => {
-      e.preventDefault(); // Prevent the form from submitting the default way
+      e.preventDefault();
       setLoading(true);
       setError('');
   
@@ -31,19 +32,18 @@ const Login=() => {
         });
   
         if (!response.ok) {
-          // Handle error from the backend (invalid credentials, etc.)
           const data = await response.json();
           setError(data.message || 'Something went wrong.');
           setLoading(false);
           return;
         }
   
-        // If successful, handle the success (e.g., redirect, store token, etc.)
         const data = await response.json();
-        // You can store the token or user info in localStorage, sessionStorage, or cookies
+        // TODO: Consider maybe using cookies? idk. we want to encrypt all the data anyways
+        //       Also rework the way we are storing this data wtf
         sessionStorage.setItem("user", JSON.stringify(data.user));
         console.log('Logged in successfully:', data);
-        // Redirect to a protected page
+
         window.location.href = '/home';
 
       } catch (err) {
