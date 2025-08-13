@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const TaskPopup = ({ close, addNewTask }) => {
+const CreateTaskModal = ({ close, addNewTask }: { close: () => void, addNewTask: () => void }) => {
     const [taskName, setTaskName] = useState('');
     const [taskCategory, setTaskCategory] = useState('work');
     const [taskPriority, setTaskPriority] = useState(5);
@@ -11,7 +11,7 @@ const TaskPopup = ({ close, addNewTask }) => {
   
     // Fetch user_id from sessionStorage when the component mounts
     useEffect(() => {
-      const user = JSON.parse(sessionStorage.getItem('user'));
+      const user = JSON.parse(sessionStorage.getItem('user') || "");
       if (user && user._id) {
         setUserId(user._id);
         setUserTaskLength(user.tasks.length);
@@ -90,7 +90,8 @@ const TaskPopup = ({ close, addNewTask }) => {
             className="w-full p-2 border mb-4"
           />
           <textarea
-            type="text"
+            // Type does not exist in textarea tag? idk, investigate
+            // type="text"
             style={{ color: 'black' }}
             placeholder="Description"
             value={taskDescription}
@@ -141,4 +142,4 @@ const TaskPopup = ({ close, addNewTask }) => {
     );
   };
   
-  export default TaskPopup;
+  export default CreateTaskModal;
