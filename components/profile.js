@@ -1,4 +1,6 @@
 import { useState } from 'react';
+// This seems to be an initial attempt to create a profile thing at the top right.
+// Investigate this further
 
 // TODO: Do something about this lmao
 // This is trying set state to a user object but our persisted user object is different, if we even have one 

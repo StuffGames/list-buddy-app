@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { ListBuddySVG } from '../../components/graphics/listbuddy-svg';
-import { LoginForm } from '../../components/login-form';
+import { LoginForm } from '../../components/LoginForm';
 
 function LoginPage () {
     const [username, setUsername] = useState<string>('');
