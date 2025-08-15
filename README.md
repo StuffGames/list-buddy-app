@@ -1,5 +1,8 @@
 # ListBuddy App
 
+![ListBuddy thumbnail](/public/list-buddy-thumbnail.png)
+*All UI Design, Logos, and Art created by Tyler Millien*
+
 ## Description
 
 **ListBuddy** is an application that helps users with executive dysfunction with managing and completing tasks. Anyone with this behavioral symptom may feel helpless when it comes to getting tasks done, leading them to shut down and not complete any tasks at all.  
@@ -51,6 +54,8 @@ npm run dev
 ```
 Then just follow the link to the running url (likely `localhost:3000`)
 ### Dev Cycle
+> NOTE:  
+> This project uses Husky hooks to enforce certain rules like branch naming conventions, running linting before committing, commit message conventions, etc.
 * When starting new changes, create a new branch with the following structure: `IssueNumber-feature-name`. Ex:
     ```shell
     git checkout -b 39-refactor-old-code
