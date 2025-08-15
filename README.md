@@ -1,32 +1,67 @@
 # ListBuddy App
 
-## About
-This is the repository for the front-end of *ListBuddy*.  
+## Description
 
-Run locally with `npm run dev`.
+**ListBuddy** is an application that helps users with executive dysfunction with managing and completing tasks. Anyone with this behavioral symptom may feel helpless when it comes to getting tasks done, leading them to shut down and not complete any tasks at all.  
+ListBuddy will help you with creating, managing, and keeping track of completed tasks. You will start by creating an account so that ListBuddy can give you access to your tasks from anywhere. Your tasks will be split into "Active tasks" and "Completed tasks". When a task is completed, you can manually check it off your "Active tasks" list, when it will move to the "Completed tasks" and you will gain 1 star as a reward.
 
-## Inspiration
-We wanted to create an application that could help people with executive dysfunction with managing and completing tasks. People with this behavioral symptom may feel helpless when it comes to getting tasks done, leading them to shut down and not complete any tasks at all.
+## Developer Tools
+* Git: https://git-scm.com/downloads
+* IDE/Code Editor
+    * VSCode, WebStorm, anything else
+* Node.js (v22.18.0 LTS)
+    * I suggest using Node Version Manager (NVM) to handle different node version/environments
+        * Mac/Linux: https://github.com/nvm-sh/nvm
+        * Windows Alternative: https://github.com/coreybutler/nvm-windows
+* JavaScript/Typescript tools (come automatically with VSCode)
+* A broswer
+    * Chrome, Edge, Firefox, etc.
+### Some Useful VSCode Extensions
+* **ESLint** is a great extension to run the current ESLint config while you program. That way you can catch issues before you run git commands.
+    * Current ESLint config not published on main branch
 
-## What it does
-ListBuddy will help you with creating, managing, and keeping track of completed tasks. You will start by creating an account so that ListBuddy can give you access to your tasks from anywhere. Then you will be brought to chat with ListBuddy casually about upcoming events you have and what you need to get done by then. ListBuddy will take what you've written and reply with a list of tasks catered to you. Your tasks will be split into "Active tasks" and "Completed tasks". When a task is completed, you can manually check it off your "Active tasks" list, when it will move to the "Completed tasks" and you will gain 1 star as a reward.
-
-## How we built it
-We used React and Tailwind to stylize our web application. OpenAI was used to allow ListBuddy to generate a list of tasks for the user.  
-The entire project was created using NextJS as a full-stack framework to be able to flexibly create routes for front-end pages and back-end REST endpoints.
-
-## Authors
-### Juan Sanchez Roa
-Designed Software, Managed development time, helped front end work, created back end routes, API functions for database, communications with MongoDB database.
-
-### Ryan Nguyen
-Created Idea, Designed Functionality, helped front end work, Created OpenAI API helper functions.
-
-### Josie Lee
-Developed Front End using React and Tailwind using designs from Tyler, Created functionality of buttons and inputs.
-
-### Sandy Son
-Developed Front End using React and Tailwind, Curated the Devpost submission, Design Database schema.
-
-### Tyler Millien
-Designed Website UI, Logo, Functionality, Art, Icons, everything nice you see.
+## Developing
+1. Clone the repo onto your local machine using `git`:
+    ```shell
+    git clone https://github.com/StuffGames/list-buddy-app.git
+    ```
+    * or the GitHub CLI:
+        ```shell
+        gh repo clone StuffGames/list-buddy-app
+        ```
+    then open the folder in VSCode or use the terminal to move into the listbuddy directory:
+    ```shell
+    cd list-buddy-app; code .
+    ```
+2. If using `nvm`, install the current node version:
+    ```shell
+    nvm install 22.18.0
+    ```
+    Or just use the version if you already have the correct version installed.
+    ```shell
+    nvm use 22.18.0
+    ```
+3. Install all current packages:
+    ```shell
+    npm install
+    ```
+To start a local version of the application use the following command:
+```shell
+npm run dev
+```
+Then just follow the link to the running url (likely `localhost:3000`)
+### Dev Cycle
+* When starting new changes, create a new branch with the following structure: `IssueNumber-feature-name`. Ex:
+    ```shell
+    git checkout -b 39-refactor-old-code
+    ```
+* Anytime you are ready to commit features to the branch use the following structure: `#IssueNumber: Current change occurring`. Ex:
+    ```shell
+    git commit "#39: Update file directory structure of front end files"
+    ```
+* Whenever you commit you can push your changes up to the remote repo (GitHub):
+    ```shell
+    git push origin 39-refactor-old-code
+    ```
+* To bring any changes into the main branch, submit any changes from the branch to a pull request so that your branch changes are merging into main: `main <-- 39-refactor-old-code`
+* Success.
