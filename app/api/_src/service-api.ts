@@ -1,6 +1,7 @@
-import { Database } from "./db-interfaces";
-import { MongoDatabase } from "./mongo-database";
+import type { Database } from "./db-interfaces";
 import type { User } from "./user-object";
+import { MongoDatabase } from "./mongo-database";
+import { JsonDatabase } from "./json-database";
 import { Task, TaskUpdateBuilder } from "../_src/task-objects";
 
 export interface ApiResponse {
@@ -11,13 +12,25 @@ export interface ApiResponse {
     task?: Task | {};
     tasks?: Task[] | {};
     optional?: any;
+};
+
+// replace this with an env variable or something
+const dbType: 'mongodb' | 'json' = 'json';
+
+function getDatabase(): Database {
+    // fall back on JSON database when you can
+    if (dbType === 'mongodb') {
+        return MongoDatabase.instance;
+    } else {
+        return JsonDatabase.instance;
+    }
 }
 
 // TODO: TEST THIS
 export async function login(username: string, password: string): Promise<ApiResponse> {
     // Connect to database
     try {
-        const db: Database = MongoDatabase.instance;
+        const db: Database = getDatabase();
         if (!db.isConnectedToDb()) {
             return {
                 status: 400,
@@ -51,7 +64,7 @@ export async function login(username: string, password: string): Promise<ApiResp
             user: user
         };
     }
-    catch(err) {
+    catch(err: any) {
         // This is where all the errors are caught....
         return {
             status: 400,
@@ -61,10 +74,10 @@ export async function login(username: string, password: string): Promise<ApiResp
     }
 }
 
-export async function createTask(params: {}): Promise<ApiResponse> {
+export async function createTask(params: any): Promise<ApiResponse> {
     // Connect to database
     try {
-        const db: Database = MongoDatabase.instance;
+        const db: Database = getDatabase();
 
         if (!db.isConnectedToDb()) {
             return {
@@ -76,6 +89,7 @@ export async function createTask(params: {}): Promise<ApiResponse> {
 
         // TODO: maybe bring the updating of user out here? idk lol
         const taskResponse = await db.addTask(new Task(params));
+        // Another TODO: check if params similar to the task interface then just cast it or something
 
         if (taskResponse.status !== 200) {
             return {
@@ -90,7 +104,7 @@ export async function createTask(params: {}): Promise<ApiResponse> {
             statusText: "Successfully created task"
         };
     }
-    catch (err) {
+    catch (err: any) {
         return {
             status: 400,
             statusText: err.name,
@@ -102,7 +116,7 @@ export async function createTask(params: {}): Promise<ApiResponse> {
 export async function getAllTasks(user_id: string): Promise<ApiResponse> {
     // connect to database
     try {
-        const db: Database = MongoDatabase.instance;
+        const db: Database = getDatabase();
         
         if (!db.isConnectedToDb()) {
             return {
@@ -120,7 +134,7 @@ export async function getAllTasks(user_id: string): Promise<ApiResponse> {
             tasks: tasks
         };
     }
-    catch (err) {
+    catch (err: any) {
         return {
             status: 400,
             statusText: err.name,
@@ -129,10 +143,10 @@ export async function getAllTasks(user_id: string): Promise<ApiResponse> {
     }
 }
 
-export async function taskUpdate(params: {}): Promise<ApiResponse> {
+export async function taskUpdate(params: any): Promise<ApiResponse> {
     // connect to database
     try{
-        const db: Database = MongoDatabase.instance;
+        const db: Database = getDatabase();
 
         if (!db.isConnectedToDb()) {
             return {
@@ -169,7 +183,7 @@ export async function taskUpdate(params: {}): Promise<ApiResponse> {
             statusText: "Successfully updated task"
         };
     }
-    catch (err) {
+    catch (err: any) {
         return {
             status: 400,
             statusText: err.name,

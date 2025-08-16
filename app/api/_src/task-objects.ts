@@ -1,6 +1,12 @@
 import { ObjectId } from 'mongodb';
 import { DB_Object, DB_UpdateBuilder } from './db-interfaces';
 
+// Putting this here in case we want to use an interface to encapsulate
+// the constructor arguments instead
+interface TaskConstructorOptions {
+    // Something here
+};
+
 class Subtask {
     Subtask(subtask_id: number, content: string) {
         let _subtask_id = subtask_id;

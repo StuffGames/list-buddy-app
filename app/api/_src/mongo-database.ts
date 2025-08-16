@@ -11,12 +11,12 @@ import {
 } from './exceptions';
 
 // URI to connect to the database, contained within secrets (.env)
-const uri = process.env.MONGO_URI;
-const db_name = process.env.DB_NAME;
+const uri = process.env.MONGO_URI || "";
+const db_name = process.env.DB_NAME || "";
 
 // TODO: TURN THE COLLECTIONS INTO SEPARATE ABSTRACTIONS?
-const user_collection_name = process.env.USER_COLLECTION;
-const task_collection_name = process.env.TASK_COLLECTION;
+const user_collection_name = process.env.USER_COLLECTION || "";
+const task_collection_name = process.env.TASK_COLLECTION || "";
 
 /**
  * MongoDB database that integrates MongoDB Atlas functionality
@@ -103,7 +103,7 @@ export class MongoDatabase implements Database {
             throw new InvalidUserError(`User with ID: '${user_id}', does not exist`);
         }
         
-        const userResult = new User(user_id, user.username, user.password, user.star_count, user.tasks.map(t => t.toString()));
+        const userResult = new User(user_id, user.username, user.password, user.star_count, user.tasks.map((t: any) => t.toString()));
         
         // TODO: Consider later use case for this
         // const tasks: Task[] = await this.getTasks(userResult);
