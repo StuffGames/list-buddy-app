@@ -8,21 +8,6 @@
 **ListBuddy** is an application that helps users with executive dysfunction with managing and completing tasks. Anyone with this behavioral symptom may feel helpless when it comes to getting tasks done, leading them to shut down and not complete any tasks at all.  
 ListBuddy will help you with creating, managing, and keeping track of completed tasks. You will start by creating an account so that ListBuddy can give you access to your tasks from anywhere. Your tasks will be split into "Active tasks" and "Completed tasks". When a task is completed, you can manually check it off your "Active tasks" list, when it will move to the "Completed tasks" and you will gain 1 star as a reward.
 
-## Technologies Used
-* NextJS
-    * ListBuddy runs as a fullstack application using NextJS as the fullstack framework, creating easy page routing and API endpoint routing.  
-* MongoDB
-    * ListBuddy utilizes this NoSQL Database as our primary database for easy code interaction and quick reads/lookups.
-* OpenAI
-    * ListBuddy utilizes the OpenAI API to simplify tasks and help rank tasks based on importance.
-* React
-    * Easy front-end tools to create modular UI components and easy integration between HTML and Javascript with JSX.
-* TypeScript
-    * For clear syntaxing and strong typing. Allows code to be written in a more straightforward and consistent style.
-* ESLint
-    * Keeping code consistent is key for low tech-debt, readability, and high code quality.
-* *TODO: Add deployment service here*
-
 ## Developer Tools
 * Git: https://git-scm.com/downloads
 * IDE/Code Editor
