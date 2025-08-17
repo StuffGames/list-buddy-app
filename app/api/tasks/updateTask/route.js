@@ -15,7 +15,7 @@ export async function POST(request) {
     */
 
     if (response === undefined) {
-      return NextResponse.json({message: "Error getting response from database"}, {status: 400});
+      return NextResponse.json({message: 'Error getting response from database'}, {status: 400});
     }
     const taskResponse = await taskUpdate(response);
 

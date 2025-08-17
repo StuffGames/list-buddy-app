@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import React, { useEffect, useState } from 'react';
 import CreateTaskModal from '../../components/CreateTaskModal';
 import TaskView from '../../components/views/TaskView';
@@ -14,16 +14,16 @@ const HomePage = () => {
   const [selectedTask, setSelectedTask] = useState<any>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>("");
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     // Fetch tasks only after the component mounts
     const starterData = async () => {
       try {
         // Ensure sessionStorage is accessed only in the client-side
-        const userData = JSON.parse(sessionStorage.getItem("user") || ""); // will throw an error
+        const userData = JSON.parse(sessionStorage.getItem('user') || ''); // will throw an error
         if (!userData) {
-          throw new Error("No user data found in sessionStorage");
+          throw new Error('No user data found in sessionStorage');
         }
 
         // IF DOESN'T WORK JUST READ DATA FROM SESSION STORAGE???
@@ -68,10 +68,10 @@ const HomePage = () => {
       prevTasks.map((task) =>
         task.name === taskName
           ? {
-              ...task,
-              completed: !task.completed,
-              completion_date: !task.completed ? new Date() : null,
-            }
+            ...task,
+            completed: !task.completed,
+            completion_date: !task.completed ? new Date() : null,
+          }
           : task
       )
     );

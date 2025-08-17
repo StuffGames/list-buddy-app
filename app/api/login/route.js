@@ -8,7 +8,7 @@ export async function POST(request) {
     const { username, password } = await request.json();
 
     if (username === undefined || password === undefined) {
-      return NextResponse.json({ message: "Username or Password missing from request"}, {status: 500});
+      return NextResponse.json({ message: 'Username or Password missing from request'}, {status: 500});
     }
 
     const response = await login(username, password);

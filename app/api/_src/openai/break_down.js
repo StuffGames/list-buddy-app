@@ -1,3 +1,4 @@
+// TODO: turn this file to typescript and figure out about this "require(...)" business
 require('dotenv').config();
 
 const { OpenAI } = require('openai');
@@ -15,13 +16,13 @@ const breakdown = async (taskName, taskDescription) => {
   `;
 
   const response = await openai.chat.completions.create({
-      messages: [
-          {
-              role: "user",
-              content: prompt
-          }
-      ],
-      model: "gpt-4o-mini"
+    messages: [
+      {
+        role: 'user',
+        content: prompt
+      }
+    ],
+    model: 'gpt-4o-mini'
   });
 
   const thebreakdown = response.choices[0].message.content.trim();

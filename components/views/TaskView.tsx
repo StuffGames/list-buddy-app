@@ -13,12 +13,12 @@ export default function TaskView({ task }: { task: any }) {
   // const [userId, setUserId] = useState(null); // State to store data from sessionStorage
 
   const color = task.category === 'work' 
-              ? ['bg-red-500','text-red-500']
-              : task.category === 'school' 
-              ? ['bg-green-500', 'text-green-500']
-              : task.category === 'home' 
-              ? ['bg-blue-500','text-blue-500'] 
-              : ['bg-purple-500','text-purple-500'];
+    ? ['bg-red-500','text-red-500']
+    : task.category === 'school' 
+      ? ['bg-green-500', 'text-green-500']
+      : task.category === 'home' 
+        ? ['bg-blue-500','text-blue-500'] 
+        : ['bg-purple-500','text-purple-500'];
 
   // useEffect(() => {
   //   // Fetch tasks only after the component mounts
@@ -56,28 +56,27 @@ export default function TaskView({ task }: { task: any }) {
   };
 
   return (
-      <div className= {`p-5 ${color[0]} text-white rounded-xl h-full relative`}>
-          <h2 className="text-3xl font-bold">{task.name}</h2>
-          <p className="mt-4 text-sm font-bold">Complete by: {new Date(task.deadline).toLocaleDateString()}</p>
-          <p className="mt-4 font-bold">{simplifiedTask ? simplifiedTask : task.description}</p>
-          <div className="flex items-center space-x-2 absolute bottom-4 justify-center mt-6">
-          <button
-              // TODO: make this dynamic for if an API for AI is connected or not
-              disabled={true}
-              className={`mt-4 px-4 py-2 bg-white ${color[1]} font-semibold rounded hover:bg-blue-100 transition`}
-              onClick={handleButton}
-          >
-              Simplify task
-              
-          </button>
-          <svg width="36" height="30" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22.017 25.2995C19.8573 20.2021 15.7977 16.1426 10.7003 13.9828C15.7977 11.8231 19.8573 7.76352 22.017 2.66616C24.1768 7.76352 28.2363 11.8231 33.3337 13.9828C28.2363 16.1426 24.1768 20.2021 22.017 25.2995Z" stroke="white" strokeWidth="4" strokeLinejoin="round"/>
-            <path d="M7.95708 20.0858C7.72015 20.0858 7.48321 20.2049 7.36474 20.4827L7.08832 21.2367C6.0616 23.9751 3.92918 26.1578 1.16493 27.1896L0.414637 27.4674C-0.138212 27.6659 -0.138212 28.4199 0.414637 28.6183L1.16493 28.8961C3.88969 29.928 6.0616 32.071 7.08832 34.8491L7.36474 35.6031C7.48321 35.8809 7.72015 36 7.95708 36C8.19402 36 8.43095 35.8809 8.54942 35.6031L8.82584 34.8491C9.85257 32.1107 11.985 29.928 14.7492 28.8961L15.4995 28.6183C16.0524 28.4199 16.0524 27.6659 15.4995 27.4674L14.7492 27.1896C12.0245 26.1578 9.85257 24.0148 8.82584 21.2367L8.54942 20.4827C8.43095 20.2049 8.19402 20.0858 7.95708 20.0858Z" fill="white"/>
-          </svg>
-          </div>
-          <div className="absolute bottom-3 right-7 scale-125 rotate-[-20deg]">
-            <ListBuddyTaskSVG />
-          </div>
+    <div className= {`p-5 ${color[0]} text-white rounded-xl h-full relative`}>
+      <h2 className="text-3xl font-bold">{task.name}</h2>
+      <p className="mt-4 text-sm font-bold">Complete by: {new Date(task.deadline).toLocaleDateString()}</p>
+      <p className="mt-4 font-bold">{simplifiedTask ? simplifiedTask : task.description}</p>
+      <div className="flex items-center space-x-2 absolute bottom-4 justify-center mt-6">
+        <button
+          // TODO: make this dynamic for if an API for AI is connected or not
+          disabled={true}
+          className={`mt-4 px-4 py-2 bg-white ${color[1]} font-semibold rounded hover:bg-blue-100 transition`}
+          onClick={handleButton}
+        >
+          Simplify task
+        </button>
+        <svg width="36" height="30" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22.017 25.2995C19.8573 20.2021 15.7977 16.1426 10.7003 13.9828C15.7977 11.8231 19.8573 7.76352 22.017 2.66616C24.1768 7.76352 28.2363 11.8231 33.3337 13.9828C28.2363 16.1426 24.1768 20.2021 22.017 25.2995Z" stroke="white" strokeWidth="4" strokeLinejoin="round"/>
+          <path d="M7.95708 20.0858C7.72015 20.0858 7.48321 20.2049 7.36474 20.4827L7.08832 21.2367C6.0616 23.9751 3.92918 26.1578 1.16493 27.1896L0.414637 27.4674C-0.138212 27.6659 -0.138212 28.4199 0.414637 28.6183L1.16493 28.8961C3.88969 29.928 6.0616 32.071 7.08832 34.8491L7.36474 35.6031C7.48321 35.8809 7.72015 36 7.95708 36C8.19402 36 8.43095 35.8809 8.54942 35.6031L8.82584 34.8491C9.85257 32.1107 11.985 29.928 14.7492 28.8961L15.4995 28.6183C16.0524 28.4199 16.0524 27.6659 15.4995 27.4674L14.7492 27.1896C12.0245 26.1578 9.85257 24.0148 8.82584 21.2367L8.54942 20.4827C8.43095 20.2049 8.19402 20.0858 7.95708 20.0858Z" fill="white"/>
+        </svg>
       </div>
+      <div className="absolute bottom-3 right-7 scale-125 rotate-[-20deg]">
+        <ListBuddyTaskSVG />
+      </div>
+    </div>
   );
 }

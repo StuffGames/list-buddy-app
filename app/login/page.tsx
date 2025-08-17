@@ -5,74 +5,74 @@ import { ListBuddySVG } from '../../components/graphics/listbuddy-svg';
 import { LoginForm } from '../../components/LoginForm';
 
 function LoginPage () {
-    const [username, setUsername] = useState<string>('');
-    const [password, setPassword] = useState<string>('');
-    // TODO: Uncomment and implement into login
-    // const [rememberMe, setRememberMe] = useState<boolean>(false);
-    const [error, setError] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(false);
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  // TODO: Uncomment and implement into login
+  // const [rememberMe, setRememberMe] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   
-    const handleSubmit = async (e: any) => {
-      e.preventDefault();
-      setLoading(true);
-      setError('');
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
   
-      const credentials = {
-        username,
-        password
-      };
-  
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // TODO: maybe work on some encryption for these details? lol
-          body: JSON.stringify(credentials),
-        });
-  
-        if (!response.ok || response.status !== 200) {
-          const data = await response.json();
-          setError(data.message || 'Something went wrong.');
-          setLoading(false);
-          return;
-        }
-  
-        const data = await response.json();
-
-        // TODO: Consider maybe using cookies? idk. we want to encrypt all the data anyways
-        //       Also rework the way we are storing this data wtf
-        sessionStorage.setItem("user", JSON.stringify(data.user));
-        // console.log('Logged in successfully:', data);
-
-        // TODO: Do something here
-        window.location.href = '/home';
-
-      } catch (err) {
-        console.error('An error occurred during login:', err);
-        setError('Failed to log in.');
-        setLoading(false);
-      }
+    const credentials = {
+      username,
+      password
     };
   
-    return (
-        <div className="h-screen bg-zinc-100 relative overflow-hidden">
-            <div className="flex items-center justify-center h-full relative z-10">
-                <LoginForm
-                  handleSubmit={handleSubmit}
-                  username={username}
-                  setUsername={setUsername}
-                  password={password}
-                  setPassword={setPassword}
-                  error={error}
-                  loading={loading}
-                />
-            </div>
-            <CornerSVG />
-        </div>
-    );
-};
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // TODO: maybe work on some encryption for these details? lol
+        body: JSON.stringify(credentials),
+      });
+  
+      if (!response.ok || response.status !== 200) {
+        const data = await response.json();
+        setError(data.message || 'Something went wrong.');
+        setLoading(false);
+        return;
+      }
+  
+      const data = await response.json();
+
+      // TODO: Consider maybe using cookies? idk. we want to encrypt all the data anyways
+      //       Also rework the way we are storing this data wtf
+      sessionStorage.setItem('user', JSON.stringify(data.user));
+      // console.log('Logged in successfully:', data);
+
+      // TODO: Do something here
+      window.location.href = '/home';
+
+    } catch (err) {
+      console.error('An error occurred during login:', err);
+      setError('Failed to log in.');
+      setLoading(false);
+    }
+  };
+  
+  return (
+    <div className="h-screen bg-zinc-100 relative overflow-hidden">
+      <div className="flex items-center justify-center h-full relative z-10">
+        <LoginForm
+          handleSubmit={handleSubmit}
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          error={error}
+          loading={loading}
+        />
+      </div>
+      <CornerSVG />
+    </div>
+  );
+}
 
 const CornerSVG = () => {
   return (
