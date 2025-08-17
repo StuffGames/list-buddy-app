@@ -38,7 +38,7 @@ export default function TaskView({ task }: { task: any }) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({user_id: task.user_id, task_id: task._id, description: task.description, completed: task.completed }),
+        body: JSON.stringify({ user_id: task.user_id, task_id: task._id, description: task.description, completed: task.completed }),
       });
 
       if (!response.ok) {

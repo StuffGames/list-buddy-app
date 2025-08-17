@@ -27,7 +27,7 @@ const breakdown = async (taskName, taskDescription) => {
 
   const thebreakdown = response.choices[0].message.content.trim();
   //return { difficulty, priority};
-  return {res: thebreakdown};
+  return { res: thebreakdown };
 };
 
 // async function main() {
@@ -37,4 +37,4 @@ const breakdown = async (taskName, taskDescription) => {
 
 // main().catch(e => console.log(e));
 
-export {breakdown};
+export { breakdown };

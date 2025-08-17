@@ -43,7 +43,7 @@ function TextInput(textInputOptions: TextInputOptions) {
       <input
         className="w-full p-2 mt-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         type={type || 'text'}
-        style={{color: 'black'}}
+        style={{ color: 'black' }}
         id={id}
         name={id}
         placeholder={placeholder || 'Enter your username'}

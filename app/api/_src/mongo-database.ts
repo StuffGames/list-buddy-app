@@ -89,7 +89,7 @@ export class MongoDatabase implements Database {
   }
 
   public async userExists(username: string): Promise<UserResponse> {
-    const user = await this.userCollection.findOne({'username': username});
+    const user = await this.userCollection.findOne({ 'username': username });
     if (user === null) {
       throw new InvalidUserError(`User "${username}" does not exist`);
     }
@@ -99,7 +99,7 @@ export class MongoDatabase implements Database {
   // Database operations below...
 
   public async getUser(user_id: string): Promise<User> {
-    const user = await this.userCollection.findOne({'_id': new ObjectId(user_id)});
+    const user = await this.userCollection.findOne({ '_id': new ObjectId(user_id) });
     if (user === null) {
       throw new InvalidUserError(`User with ID: '${user_id}', does not exist`);
     }
@@ -118,17 +118,17 @@ export class MongoDatabase implements Database {
 
     if (result.acknowledged) {
       console.log(result.insertedId);
-      return new UserResponse({status: 200, statusText: 'Inserted', user_id: result.insertedId.toString()});
+      return new UserResponse({ status: 200, statusText: 'Inserted', user_id: result.insertedId.toString() });
     }
-    return new UserResponse({status: 400, statusText: 'Failed'});
+    return new UserResponse({ status: 400, statusText: 'Failed' });
   }
 
   public async updateUser(user_id: string, update: UserUpdateBuilder): Promise<UserResponse> {
-    const result = await this.userCollection.updateOne({'_id': new ObjectId(user_id)}, update.getUpdate());
+    const result = await this.userCollection.updateOne({ '_id': new ObjectId(user_id) }, update.getUpdate());
     if (!result.acknowledged || result.matchedCount === 0 || result.modifiedCount === 0) {
-      return new UserResponse({status: 400, statusText: 'failure'});
+      return new UserResponse({ status: 400, statusText: 'failure' });
     }
-    return new UserResponse({status: 200, statusText: 'success', user_id: user_id});
+    return new UserResponse({ status: 200, statusText: 'success', user_id: user_id });
   }
     
   public async getTasks(user: User): Promise<Task[]> {
@@ -136,7 +136,7 @@ export class MongoDatabase implements Database {
     const tasks: Task[] = [];
 
     // TODO: consider updating the task object array of User?
-    const db_tasks = await this.taskCollection.find({'user_id': new ObjectId(user.id)});
+    const db_tasks = await this.taskCollection.find({ 'user_id': new ObjectId(user.id) });
     for await (const db_task of db_tasks) {
       if (db_task === null) {
         throw new InvalidTaskError('Task does not exist');
@@ -151,7 +151,7 @@ export class MongoDatabase implements Database {
 
   // TASKS OPERATIONS
   public async getTask(user_id: string, task_id: string | ObjectId): Promise<Task> {
-    const task = await this.taskCollection.findOne({'_id': (typeof(task_id) === 'string') ? new ObjectId(task_id) : task_id});
+    const task = await this.taskCollection.findOne({ '_id': (typeof(task_id) === 'string') ? new ObjectId(task_id) : task_id });
 
     if (task === null) {
       console.log('Error getting task. ID may be incorrect.');
@@ -169,7 +169,7 @@ export class MongoDatabase implements Database {
   public async addTask(task: Task): Promise<TaskResponse> {
     const result = await this.taskCollection.insertOne(task.toJSON());
     if (!result.acknowledged) {
-      return new TaskResponse({status: 400, statusText: 'Failed'});
+      return new TaskResponse({ status: 400, statusText: 'Failed' });
     }
     // -----------------------------------------------------
     // ADDS TASK TO THE USER AS WELL, consider dropping if we have other code do it instead
@@ -183,7 +183,7 @@ export class MongoDatabase implements Database {
     }
     // ------------------------------------------------------
 
-    return new TaskResponse({status: 200, statusText: 'Inserted', task_id: result.insertedId.toString()});
+    return new TaskResponse({ status: 200, statusText: 'Inserted', task_id: result.insertedId.toString() });
   }
 
   // CONSIDERING DROPPING, idk...
@@ -204,15 +204,15 @@ export class MongoDatabase implements Database {
       });
     }
 
-    return new TaskResponse({status: 200, statusText: 'Success'});
+    return new TaskResponse({ status: 200, statusText: 'Success' });
   }
 
   public async updateTask(task_id: string, update: TaskUpdateBuilder): Promise<TaskResponse> {
-    const result = await this.taskCollection.updateOne({'_id': new ObjectId(task_id)}, update.getUpdate());
+    const result = await this.taskCollection.updateOne({ '_id': new ObjectId(task_id) }, update.getUpdate());
     if (!result.acknowledged || result.matchedCount === 0 || result.modifiedCount === 0) {
-      return new TaskResponse({status: 400, statusText: 'failure'});
+      return new TaskResponse({ status: 400, statusText: 'failure' });
     }
-    return new TaskResponse({status: 200, statusText: 'success', task_id: task_id});
+    return new TaskResponse({ status: 200, statusText: 'success', task_id: task_id });
   }
 
   // etc...

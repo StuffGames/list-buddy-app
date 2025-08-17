@@ -14,7 +14,7 @@ export class User extends DB_Object{
   // TODO: change this to be a Task id array (rename to task_ids) and maybe add a new field that is just a Task array (named tasks)
   private _task_ids: string[];
 
-//   private _tasks: Task[];
+  //   private _tasks: Task[];
     
   /**
      * Creates a user object from the input object

@@ -21,7 +21,7 @@ export async function POST(request) {
       }
     });
     if (response === undefined) {
-      return NextResponse.json({message: 'Error getting response from database'}, {status: 400});
+      return NextResponse.json({ message: 'Error getting response from database' }, { status: 400 });
     }
 
     const textResponse = await breakdown(response.task_name, response.description);
@@ -38,10 +38,10 @@ export async function POST(request) {
     
     if (taskResponse.status !== 200) {
       console.log(taskResponse);
-      return NextResponse.json({message: taskResponse.message}, {status: 400});
+      return NextResponse.json({ message: taskResponse.message }, { status: 400 });
     }
         
-    return NextResponse.json({ message: 'Task Updating Success', fullText}, {status: 200});
+    return NextResponse.json({ message: 'Task Updating Success', fullText }, { status: 200 });
     
   } catch (error) {
     console.log(error);

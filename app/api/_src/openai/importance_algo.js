@@ -34,7 +34,7 @@ const getOpenAIEstimates = async (taskDescription) => {
   });
 
   const [difficulty, priority] = response.choices[0].message.content.trim().split(',').map(num => parseFloat(num));
-  return { difficulty, priority};
+  return { difficulty, priority };
 };
 
 // Main function to assess a task and calculate importance score
@@ -57,10 +57,10 @@ async function calculateTaskImportance({ taskDescription, daysUntilDeadline, dif
   // Calculate importance score
   const importanceScore = normalizedDays + priorityFactor + difficultyFactor;
   if (importanceScore === undefined) {
-    return {status: 400};
+    return { status: 400 };
   }
 
-  return {score: importanceScore.toFixed(2), status: 200};
+  return { score: importanceScore.toFixed(2), status: 200 };
 }
 
 // Example usage
@@ -77,4 +77,4 @@ async function calculateTaskImportance({ taskDescription, daysUntilDeadline, dif
 //     console.log(importanceScore);
 // })();
 
-export {daysUntilDeadline, calculateTaskImportance, getOpenAIEstimates};
+export { daysUntilDeadline, calculateTaskImportance, getOpenAIEstimates };
