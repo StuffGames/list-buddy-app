@@ -25,18 +25,18 @@ const task_collection_name = process.env.TASK_COLLECTION || '';
 export class MongoDatabase implements Database {
 
   /**
-     * Represents an instance of the database
-     */
+   * Represents an instance of the database
+   */
   static #instance: Database;
     
   /**
-     * Represents a specific database, whether MongoDB or local .json
-     */
+   * Represents a specific database, whether MongoDB or local .json
+   */
   private db: Db;
 
   /**
-     * The MongoClient object from which we can interact with the Mongo Database
-     */
+   * The MongoClient object from which we can interact with the Mongo Database
+   */
   private client: MongoClient;
 
   // TODO: Add collection abstraction for MongoDB Collections maybe?
@@ -46,15 +46,15 @@ export class MongoDatabase implements Database {
   private connected: boolean = false;
 
   /**
-     * Private constructor to avoid creation from `new` operator
-     */
+   * Private constructor to avoid creation from `new` operator
+   */
   private constructor() {
     this.connectToDatabase();
   }
 
   /**
-     * Get the current running instance of the Database object
-     */
+   * Get the current running instance of the Database object
+   */
   public static get instance(): Database {
     if (!MongoDatabase.#instance) {
       MongoDatabase.#instance = new MongoDatabase();

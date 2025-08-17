@@ -6,17 +6,17 @@ export async function POST(request) {
   try {
     const response = await request.json();
     /*
-        Response: {
-            user_id,
-            deadline,
-            name,
-            category,
-            description,
-            priority,
-            difficulty,
-            importance,
-            completed
-        }
+      Response: {
+        user_id,
+        deadline,
+        name,
+        category,
+        description,
+        priority,
+        difficulty,
+        importance,
+        completed
+      }
     */
     if (response === undefined) {
       return NextResponse.json({ message: 'Error getting response from database' }, { status: 400 });

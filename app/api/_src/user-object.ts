@@ -17,21 +17,21 @@ export class User extends DB_Object{
   //   private _tasks: Task[];
     
   /**
-     * Creates a user object from the input object
-     * 
-     * @param user_object JSON object to get values from
-     */
+   * Creates a user object from the input object
+   * 
+   * @param user_object JSON object to get values from
+   */
   constructor(user_object: any);
     
   /**
-     * Creates a user object from the inputted variables
-     * 
-     * @param id Unique id for the user
-     * @param star_count The amount of stars the user has
-     * @param username The username of the user
-     * @param password OPTIONAL (not needed for now)
-     * @param tasks List of task_ids
-     */
+   * Creates a user object from the inputted variables
+   * 
+   * @param id Unique id for the user
+   * @param star_count The amount of stars the user has
+   * @param username The username of the user
+   * @param password OPTIONAL (not needed for now)
+   * @param tasks List of task_ids
+   */
   constructor(id: string, username: string, password: string, star_count?: number, tasks?: string[]);
 
   constructor(objectOrId: any | string, username: string, password: string, star_count: number = 0, tasks: string[] = []) {

@@ -27,25 +27,25 @@ export class Task extends DB_Object {
   public description: string;
 
   /**
-     * Creates a Task based on input object
-     * @param task_object JSON object to get values from 
-     */
+   * Creates a Task based on input object
+   * @param task_object JSON object to get values from 
+   */
   constructor(task_object: any);
 
   /**
-     * Creates a Task from the inputted variables
-     * 
-     * @param user_id ID of the user this task belongs to
-     * @param task_id ID of the Task in the database
-     * @param name Name of the task
-     * @param category Category of the task
-     * @param description Description of the task
-     * @param deadline Date which the task is due
-     * @param priority Priority value of the task
-     * @param difficulty Difficulty value of the task
-     * @param importance Importance value of the task
-     * @param completed Has the Task been completed yet
-     */
+   * Creates a Task from the inputted variables
+   * 
+   * @param user_id ID of the user this task belongs to
+   * @param task_id ID of the Task in the database
+   * @param name Name of the task
+   * @param category Category of the task
+   * @param description Description of the task
+   * @param deadline Date which the task is due
+   * @param priority Priority value of the task
+   * @param difficulty Difficulty value of the task
+   * @param importance Importance value of the task
+   * @param completed Has the Task been completed yet
+   */
   constructor(task_id: string, user_id: string, name: string, category: string, description: string, 
         deadline?: Date, priority?: number, difficulty?: number, importance?: number, completed?: boolean);
         
@@ -126,10 +126,10 @@ export class Task extends DB_Object {
   }
 
   /**
-     * Switches completed flag to opposite value.  
-     * If completed is true, then it gets switched to false.  
-     * If completed is false, then it gets switched to true;
-     */
+   * Switches completed flag to opposite value.  
+   * If completed is true, then it gets switched to false.  
+   * If completed is false, then it gets switched to true;
+   */
   public switchComplete() {
     this.completed = !this.completed;
   }

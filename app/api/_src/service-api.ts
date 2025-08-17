@@ -143,12 +143,12 @@ export async function taskUpdate(params: any): Promise<ApiResponse> {
       };
     }
     /*
-        Response:
-            user_id,
-            task_id,
-            description,
-            completed
-        */
+      Response:
+        user_id,
+        task_id,
+        description,
+        completed
+    */
 
     // TODO: Fix this so that the task builder is built based on whatever fields available in params variable
     // Currently just works based on input from 'api/openai/importance'
