@@ -1,0 +1,13 @@
+# The regular expression pattern to match the commit message format
+pattern="^#[0-9]+: .+"
+
+# Get the commit message
+commit_msg=$(cat "$1")
+
+# Check if the commit message matches the required pattern
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+    echo "ERROR: Commit message does not follow the required pattern."
+    echo "The message should start with a reference to an issue (#24), followed by a colon, and then the rest of the message."
+    echo "Example: '#24: Fix bug introduced by last commit'"
+    exit 1
+fi

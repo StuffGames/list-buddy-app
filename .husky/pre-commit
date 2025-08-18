@@ -1,0 +1,2 @@
+# run linting and fix any autofix issues
+# npm run lint -- --fix

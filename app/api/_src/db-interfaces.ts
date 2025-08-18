@@ -1,9 +1,9 @@
 import type { User, UserResponse, UserUpdateBuilder } from './user-object';
 import type { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
 import type {
-    DatabaseConnectionError,
-    InvalidUserError,
-    InvalidTaskError
+  DatabaseConnectionError,
+  InvalidUserError,
+  InvalidTaskError
 } from './exceptions';
 
 /**
@@ -110,40 +110,40 @@ interface IDB_Object {
     /**
      * Returns the unique ID of this object
      */
-    getId(): Number;
+    getId(): number;
     
     // fromJSON(obj: Object);
 
     /**
      * Returns this object as a JSON object that is correct to its database representation
      */
-    toJSON(): Object;
+    toJSON(): object;
 }
 
 /**
  * Represents an Object that is transformed from data in a specific Database
  */
 export abstract class DB_Object {
-    // TODO: change this to be an ObjectID() from mongodb, that way we dont have to keep creating new ones
-    //       also think about maybe being able to change the id??? not sure...
-    protected _id: string;
+  // TODO: change this to be an ObjectID() from mongodb, that way we dont have to keep creating new ones
+  //       also think about maybe being able to change the id??? not sure...
+  protected _id: string;
 
-    /**
-     * Returns the unique ID of this object
-     */
-    abstract get id(): string;
-    
-    // fromJSON(obj: Object);
+  /**
+   * Returns the unique ID of this object
+   */
+  abstract get id(): string;
 
-    /**
-     * Returns this object as a JSON object that is correct to its database representation
-     */
-    abstract toJSON(): Object;
+  // fromJSON(obj: Object);
+
+  /**
+   * Returns this object as a JSON object that is correct to its database representation
+   */
+  abstract toJSON(): object;
 }
 
 // FOR LATER TO ENCAPSULATE A LOT OF RESPONSE CODE
 abstract class DB_Object_Resposne {
-    constructor(){}
+  constructor(){}
 }
 
 /**
@@ -154,41 +154,41 @@ abstract class DB_Object_Resposne {
  * but it is important to not do that as it could mess up your update and what you actually want to change.
  */
 export abstract class DB_UpdateBuilder {
-    protected updateQuery: {};
-    constructor() {
-        this.updateQuery = {};
-    }
+  protected updateQuery: any;
+  constructor() {
+    this.updateQuery = {};
+  }
 
-    private createOperator(operator: string, field: string, value: string | number | object) {
-        if (this.updateQuery[operator] === undefined) {
-            this.updateQuery[operator] = {};
-        }
-        this.updateQuery[operator][field] = value;
+  private createOperator(operator: string, field: string, value: string | number | object) {
+    if (this.updateQuery[operator] === undefined) {
+      this.updateQuery[operator] = {};
     }
+    this.updateQuery[operator][field] = value;
+  }
 
-    protected $set(field: string, value: string | number | any) {
-        this.createOperator("$set", field, value);
-    }
+  protected $set(field: string, value: string | number | any) {
+    this.createOperator('$set', field, value);
+  }
 
-    protected $inc(field: string, value: number) {
-        this.createOperator("$inc", field, value);
-    }
+  protected $inc(field: string, value: number) {
+    this.createOperator('$inc', field, value);
+  }
 
-    protected $push(field: string, value: string | object) {
-        this.createOperator("$push", field, value);
-    }
+  protected $push(field: string, value: string | object) {
+    this.createOperator('$push', field, value);
+  }
 
-    protected $pull(field: string, value: string | object) {
-        this.createOperator("$pull", field, value);
-    }
+  protected $pull(field: string, value: string | object) {
+    this.createOperator('$pull', field, value);
+  }
 
-    public clear() {
-        this.updateQuery = {};
-    }
+  public clear() {
+    this.updateQuery = {};
+  }
 
-    public getUpdate(): object {
-        const query = this.updateQuery;
-        this.clear();
-        return query;
-    }
+  public getUpdate(): object {
+    const query = this.updateQuery;
+    this.clear();
+    return query;
+  }
 }

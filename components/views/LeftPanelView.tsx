@@ -7,7 +7,7 @@ interface LeftPanelViewOptions {
   tasks: any[]; // TODO: change type later on
   // Passing function because we want the change to happen at the uppermost level
   handleCheckboxChange: (taskName: string) => void
-};
+}
 
 /**
  * Renders a left panel on a page that will contain tasks titles separated by completeness
@@ -91,6 +91,6 @@ function LeftPanelView(options: LeftPanelViewOptions) {
       </div>
     </div>
   );
-};
+}
 
 export { LeftPanelView };

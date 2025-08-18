@@ -3,9 +3,10 @@
  */
 interface TaskBubbleOptions {
   task: any;
+  key: number;
   openTaskView: (task: any) => void;
   handleCheckboxChange: (taskName: string) => void;
-};
+}
 
 /**
  * Renders a bubble for a specific task to display in the main page view
@@ -15,6 +16,7 @@ interface TaskBubbleOptions {
 function TaskBubble(options: TaskBubbleOptions) {
   const {
     task,
+    key,
     openTaskView,
     handleCheckboxChange
   } = options;
@@ -25,19 +27,19 @@ function TaskBubble(options: TaskBubbleOptions) {
   const boxSize = task.priority <= 2 
     ? 'col-span-2 row-span-2' 
     : task.priority <= 4 
-    ? 'col-span-2 row-span-2' 
-    : 'col-span-2 row-span-2';
+      ? 'col-span-2 row-span-2' 
+      : 'col-span-2 row-span-2';
   const color = task.category === 'work' 
     ? 'bg-red-500' 
     : task.category === 'school' 
-    ? 'bg-green-500' 
-    : task.category === 'home' 
-    ? 'bg-blue-500' 
-    : 'bg-purple-500';
+      ? 'bg-green-500' 
+      : task.category === 'home' 
+        ? 'bg-blue-500' 
+        : 'bg-purple-500';
 
   return (
     <div
-      key={task.id}
+      key={key}
       className={`${boxSize} ${color} p-4 text-white rounded-lg relative cursor-pointer`}
       onClick={() => openTaskView(task)}
     >
@@ -68,6 +70,6 @@ function TaskBubble(options: TaskBubbleOptions) {
       </div>
     </div>
   );
-};
+}
 
 export { TaskBubble };
