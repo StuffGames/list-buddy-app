@@ -4,18 +4,24 @@
 import { Button } from './inputs/button-input';
 import { CheckBox } from './inputs/checkbox-input';
 import { TextInput } from './inputs/text-input';
+import { useState } from 'react';
 
 /**
  * Represents configuration options for a Login form
  */
-interface LoginFormOptions {
-    handleSubmit: (e: any) => void;
+interface LoginFormProps {
+    onSubmit: (values: {
     username: string;
-    setUsername: (username: string) => void;
     password: string;
-    setPassword: (password: string) => void;
-    error: string;
-    loading: boolean;
+  }) => void ;
+  serverLoading: boolean;
+  serverError: string;
+    // username: string;
+    // setUsername: (username: string) => void;
+    // password: string;
+    // setPassword: (password: string) => void;
+    // error: string;
+    // loading: boolean;
 }
 
 /**
@@ -24,16 +30,24 @@ interface LoginFormOptions {
  * @param loginFormOptions Options for configuring this component
  * @returns React form component
  */
-function LoginForm(loginFormOptions: LoginFormOptions) {
-  const {
-    handleSubmit,
-    username,
-    setUsername,
-    password,
-    setPassword,
-    error,
-    loading
-  } = loginFormOptions;
+export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormProps) {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  // TODO: Uncomment and implement into login
+  // const [rememberMe, setRememberMe] = useState<boolean>(false);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    try {
+      await onSubmit({ username, password });
+    } catch (err: any) {
+      setError(serverError || err.message || 'Submission failed.');
+    }
+  };
+
     
   return (
     <form
@@ -68,7 +82,7 @@ function LoginForm(loginFormOptions: LoginFormOptions) {
           label="Remember Me"
         />
 
-        <a href="#" className="text-sm text-blue-500 hover:underline">
+        <a href="/signup" className="text-sm text-blue-500 hover:underline">
           Sign Up
         </a>
       </div>
@@ -77,8 +91,8 @@ function LoginForm(loginFormOptions: LoginFormOptions) {
         id="submit-button"
         name="button"
         type="submit"
-        value={loading ? 'Logging in...' : 'Submit'}
-        disabled={loading}
+        value={serverLoading ? 'Logging in...' : 'Submit'}
+        disabled={serverLoading}
       />
 
       {error && <p className="text-center text-red-500">{error}</p>}
@@ -94,5 +108,3 @@ function LoginForm(loginFormOptions: LoginFormOptions) {
     </form>
   );
 }
-
-export { LoginForm };

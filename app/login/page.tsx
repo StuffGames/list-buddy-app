@@ -5,22 +5,12 @@ import { ListBuddySVG } from '../../components/graphics/listbuddy-svg';
 import { LoginForm } from '../../components/LoginForm';
 
 function LoginPage () {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  // TODO: Uncomment and implement into login
-  // const [rememberMe, setRememberMe] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
+
+  const handleSubmit = async (values: { username: string; password: string }) => {
     setLoading(true);
     setError('');
-  
-    const credentials = {
-      username,
-      password
-    };
   
     try {
       const response = await fetch('/api/login', {
@@ -29,7 +19,7 @@ function LoginPage () {
           'Content-Type': 'application/json',
         },
         // TODO: maybe work on some encryption for these details? lol
-        body: JSON.stringify(credentials),
+        body: JSON.stringify(values),
       });
   
       if (!response.ok || response.status !== 200) {
@@ -60,13 +50,7 @@ function LoginPage () {
     <div className="h-screen bg-zinc-100 relative overflow-hidden">
       <div className="flex items-center justify-center h-full relative z-10">
         <LoginForm
-          handleSubmit={handleSubmit}
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          error={error}
-          loading={loading}
+          onSubmit={handleSubmit} serverLoading={loading} serverError={error}
         />
       </div>
       <CornerSVG />
