@@ -12,8 +12,8 @@ const CreateTaskModal = ({ close, addNewTask }: { close: () => void, addNewTask:
   // Fetch user_id from sessionStorage when the component mounts
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem('user') || '');
-    if (user && user._id) {
-      setUserId(user._id);
+    if (user && (user._id || user.id)) {
+      setUserId(user._id || user.id);
       setUserTaskLength(user.tasks.length);
     }
   }, []);
@@ -45,7 +45,13 @@ const CreateTaskModal = ({ close, addNewTask }: { close: () => void, addNewTask:
       const responseTask = await importanceResponse.json();
 
       newTask.importance = Number(responseTask.score);
+    }
+    catch (error) {
+      // console.error('Error getting importance score: ', error);
+      console.log('Unable to get importance score, skipping...');
+    }
 
+    try {
       // Send a POST request to the internal API
       const response = await fetch('/api/tasks/createTask', {
         method: 'POST',

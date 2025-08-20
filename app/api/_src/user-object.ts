@@ -95,7 +95,7 @@ export class User extends DB_Object{
       tasks: this._task_ids
     };
 
-    if(this._id !== undefined) {
+    if(this._id) {
       result.id = this._id;
     }
 

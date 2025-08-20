@@ -141,7 +141,7 @@ export class Task extends DB_Object {
   public toJSON(): object {
     const result = {
       _id: '',
-      user_id: new ObjectId(this._user_id),
+      user_id: this.user_id,// Following is for MongoDB: new ObjectId(this._user_id),
       name: this._name,
       deadline: this._deadline,
       category: this._category,
@@ -152,7 +152,7 @@ export class Task extends DB_Object {
       completed: this.completed
     };
         
-    if (this.id !== undefined) {
+    if (this.id) {
       result._id = this.id;
     }
 

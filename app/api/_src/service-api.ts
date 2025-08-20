@@ -1,6 +1,7 @@
-import { Database } from './db-interfaces';
-import { MongoDatabase } from './mongo-database';
+import type { Database } from './db-interfaces';
 import type { User } from './user-object';
+import { MongoDatabase } from './mongo-database';
+import { JsonDatabase } from './json-database';
 import { Task, TaskUpdateBuilder } from '../_src/task-objects';
 
 export interface ApiResponse {
@@ -13,19 +14,42 @@ export interface ApiResponse {
     optional?: any;
 }
 
+// replace this with an env variable or something
+const dbType: 'mongodb' | 'json' = 'json';
+
+// TODO: Consider doing database connection stuff at an upper level
+const db: Database = getDatabase();
+await checkDbConnection();
+
+function getDatabase() {
+  // fall back on JSON database when you can
+  if (dbType === 'mongodb') {
+    return MongoDatabase.instance;
+  } else {
+    return JsonDatabase.instance;
+  }
+}
+
+async function checkDbConnection(): Promise<void> {
+  if (!db.isConnectedToDb()) {
+    try {
+      await db.connectToDatabase();
+    }
+    catch (error: any) {
+      console.error('Error connecting to db', error);
+      // return {
+      //   status: 400,
+      //   statusText: 'Unable to connect to database',
+      //   message: 'Connection was not made to the database'
+      // };
+    }
+  }
+}
+
 // TODO: TEST THIS
 export async function login(username: string, password: string): Promise<ApiResponse> {
   // Connect to database
   try {
-    const db: Database = MongoDatabase.instance;
-    if (!db.isConnectedToDb()) {
-      return {
-        status: 400,
-        statusText: 'Unable to connect to database',
-        message: 'Connection was not made to the database'
-      };
-    }
-
     const userExists = await db.userExists(username);
     if (userExists.status == 400){
       return {
@@ -64,16 +88,6 @@ export async function login(username: string, password: string): Promise<ApiResp
 export async function createTask(params: any): Promise<ApiResponse> {
   // Connect to database
   try {
-    const db: Database = MongoDatabase.instance;
-
-    if (!db.isConnectedToDb()) {
-      return {
-        status: 400,
-        statusText: 'Unable to connect to database',
-        message: 'Connection was not made to the database'
-      };
-    }
-
     // TODO: maybe bring the updating of user out here? idk lol
     const taskResponse = await db.addTask(new Task(params));
 
@@ -103,15 +117,6 @@ export async function createTask(params: any): Promise<ApiResponse> {
 export async function getAllTasks(user_id: string): Promise<ApiResponse> {
   // connect to database
   try {
-    const db: Database = MongoDatabase.instance;
-        
-    if (!db.isConnectedToDb()) {
-      return {
-        status: 400,
-        statusText: 'Unable to connect to database',
-        message: 'Connection was not made to the database'
-      };
-    }
     const user: User = await db.getUser(user_id);
     const tasks: Task[] = await db.getTasks(user);
 
@@ -133,15 +138,6 @@ export async function getAllTasks(user_id: string): Promise<ApiResponse> {
 export async function taskUpdate(params: any): Promise<ApiResponse> {
   // connect to database
   try{
-    const db: Database = MongoDatabase.instance;
-
-    if (!db.isConnectedToDb()) {
-      return {
-        status: 400,
-        statusText: 'Unable to connect to database',
-        message: 'Connection was not made to the database'
-      };
-    }
     /*
       Response:
         user_id,
