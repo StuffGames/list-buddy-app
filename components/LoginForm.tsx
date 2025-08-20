@@ -1,21 +1,8 @@
-// TODO: Fix up parameters and figure out what to do with this whole form
-//      It's tightly coupled with the login logic so we will have to rearrange some stuff
-//      Let's think in terms of scope for these variables and the logic/data flow
 import { Button } from './inputs/button-input';
 import { CheckBox } from './inputs/checkbox-input';
 import { TextInput } from './inputs/text-input';
 import { useState } from 'react';
-
-/**
- * Represents configuration options for a Login form
- */
-interface LoginFormProps {
-    onSubmit: (values: {
-    username: string;
-    password: string;
-  }) => void ;
-  serverError: string;
-}
+ 
 
 /**
  * Renders a login form that takes in react state variables and functionsfor controlling data flow
@@ -23,24 +10,47 @@ interface LoginFormProps {
  * @param loginFormOptions Options for configuring this component
  * @returns React form component
  */
-export function LoginForm({ onSubmit, serverError }: LoginFormProps) {
+export function LoginForm() {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
   // TODO: Uncomment and implement into login
   // const [rememberMe, setRememberMe] = useState<boolean>(false);
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+  
     try {
-      await onSubmit({ username, password });
-    } catch (err: any) {
-      setError(err.message || 'Submission failed.');
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // TODO: maybe work on some encryption for these details? lol
+        body: JSON.stringify({ username, password }),
+      });
+  
+      const data = await response.json();
+      if (!response.ok || response.status !== 200) {
+        setError(data.message || 'Something went wrong.');
+        setLoading(false);
+        return;
+      }
+
+      // TODO: Consider maybe using cookies? idk. we want to encrypt all the data anyways
+      //       Also rework the way we are storing this data wtf
+      sessionStorage.setItem('user', JSON.stringify(data.user));
+      // console.log('Logged in successfully:', data);
+
+      // TODO: Do something here
+      window.location.href = '/home';
+
+    } catch (err) {
+      console.error('An error occurred during login:', err);
+      setError('Failed to log in.');
     }
     setLoading(false);
   };
@@ -94,7 +104,6 @@ export function LoginForm({ onSubmit, serverError }: LoginFormProps) {
         value={loading ? 'Logging in...' : 'Submit'}
         disabled={loading}
       />
-      {serverError && <p className="text-center text-red-500">{serverError}</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
             
       <div className="text-center">
