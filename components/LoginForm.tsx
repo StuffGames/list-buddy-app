@@ -14,14 +14,7 @@ interface LoginFormProps {
     username: string;
     password: string;
   }) => void ;
-  serverLoading: boolean;
   serverError: string;
-    // username: string;
-    // setUsername: (username: string) => void;
-    // password: string;
-    // setPassword: (password: string) => void;
-    // error: string;
-    // loading: boolean;
 }
 
 /**
@@ -30,10 +23,12 @@ interface LoginFormProps {
  * @param loginFormOptions Options for configuring this component
  * @returns React form component
  */
-export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormProps) {
+export function LoginForm({ onSubmit, serverError }: LoginFormProps) {
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+
   // TODO: Uncomment and implement into login
   // const [rememberMe, setRememberMe] = useState<boolean>(false);
 
@@ -41,11 +36,13 @@ export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormPro
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
     try {
       await onSubmit({ username, password });
     } catch (err: any) {
-      setError(serverError || err.message || 'Submission failed.');
+      setError(err.message || 'Submission failed.');
     }
+    setLoading(false);
   };
 
     
@@ -66,6 +63,7 @@ export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormPro
         value={username}
         placeholder="Enter your username"
         onChange={(e: any) => setUsername(e.target.value)}
+        required={true}
       />
       <TextInput
         label="Password"
@@ -74,6 +72,8 @@ export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormPro
         value={password}
         placeholder="Enter your password"
         onChange={(e: any) => setPassword(e.target.value)}
+        required={true}
+
       />
       <div className="mb-4 flex justify-between items-center">
         <CheckBox
@@ -91,10 +91,10 @@ export function LoginForm({ onSubmit, serverLoading, serverError }: LoginFormPro
         id="submit-button"
         name="button"
         type="submit"
-        value={serverLoading ? 'Logging in...' : 'Submit'}
-        disabled={serverLoading}
+        value={loading ? 'Logging in...' : 'Submit'}
+        disabled={loading}
       />
-
+      {serverError && <p className="text-center text-red-500">{serverError}</p>}
       {error && <p className="text-center text-red-500">{error}</p>}
             
       <div className="text-center">

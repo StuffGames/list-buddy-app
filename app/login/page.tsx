@@ -6,10 +6,8 @@ import { LoginForm } from '../../components/LoginForm';
 
 function LoginPage () {
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (values: { username: string; password: string }) => {
-    setLoading(true);
     setError('');
   
     try {
@@ -25,7 +23,6 @@ function LoginPage () {
       if (!response.ok || response.status !== 200) {
         const data = await response.json();
         setError(data.message || 'Something went wrong.');
-        setLoading(false);
         return;
       }
   
@@ -42,7 +39,6 @@ function LoginPage () {
     } catch (err) {
       console.error('An error occurred during login:', err);
       setError('Failed to log in.');
-      setLoading(false);
     }
   };
   
@@ -50,7 +46,7 @@ function LoginPage () {
     <div className="h-screen bg-zinc-100 relative overflow-hidden">
       <div className="flex items-center justify-center h-full relative z-10">
         <LoginForm
-          onSubmit={handleSubmit} serverLoading={loading} serverError={error}
+          onSubmit={handleSubmit} serverError={error}
         />
       </div>
       <CornerSVG />
