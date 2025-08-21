@@ -1,8 +1,8 @@
 import { randomUUID } from 'crypto';
 import { Database } from './db-interfaces';
 import { DatabaseConnectionError, InvalidUserError } from './exceptions';
-import { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
-import { UserResponse, User, UserUpdateBuilder } from './user-object';
+import { Task, TaskResponse } from './task-objects';
+import { UserResponse, User } from './user-object';
 import { promises } from 'fs';
 
 const fs = promises;
@@ -57,7 +57,7 @@ class JsonDatabase implements Database {
   //      And then create a new userExists that checks the id
   async userExists(username: string): Promise<UserResponse> {
     // Using type any for right now because we need to reset the database before using the correct types
-    const user: any = this.jsonData.users.find((u: any) => u.username === username);
+    const user: any = this.jsonData.users.find((u: User) => u.username === username);
     if (!user) {
       throw new InvalidUserError(`User "${username}" does not exist`);
     }
@@ -65,7 +65,7 @@ class JsonDatabase implements Database {
   }
 
   async getUser(user_id: string): Promise<User> {
-    const user: any = this.jsonData.users.find((user: any) => user.id === user_id);
+    const user: any = this.jsonData.users.find((user: User) => user.id === user_id);
     if (!user) {
       throw new InvalidUserError(`User with ID: '${user_id}', does not exist`);
     }
@@ -79,32 +79,56 @@ class JsonDatabase implements Database {
       await fs.writeFile(temp_db_filename, JSON.stringify(this.jsonData));
     }
     catch (error) {
+      // TODO: consider updating the User and Task response to take in a "message" property
+      //    That way we dont just console.error an error, instead propogate it to front end
+      console.error(error);
       return new UserResponse({ status: 400, statusText: `Failed to add user: ${user.username}` });
     }
     return new UserResponse({ status: 200, statusText: 'Inserted', user_id: randomUUID() });
   }
 
-  async updateUser(user_id: string, update: UserUpdateBuilder): Promise<UserResponse> {
-    const user = this.jsonData.users.find((user: any) => user.id === user_id);
+  async updateUser(user_id: string, update: any): Promise<UserResponse> {
+    const user: any = this.jsonData.users.find((user: User) => user.id === user_id);
     if (!user) {
       return new UserResponse({ status: 400, statusText: `No user with ID: ${user_id} found` });
     }
-    // Figure out what to do with the UserUpdateBuilder
-    // user = update
-    // return new UserResponse({status: 200, statusText: "success", user_id: user_id});
-    return new UserResponse({ status: 400, statusText: 'User update not implemented yet' });
+
+    const updatedUser = user;
+    if (update) {
+      Object.keys(update).forEach((key: any) => {
+        // TODO: Maybe add a check to make sure stuff like id doesn't get changed?
+        if (user[key]) {
+          updatedUser[key] = update[key];
+        }
+      });
+    }
+
+    const userIndex: number = this.jsonData.users.findIndex(user);
+    this.jsonData.users[userIndex] = updatedUser;
+
+    try {
+      await fs.writeFile(temp_db_filename, JSON.stringify(this.jsonData));
+    }
+    catch (error: any) {
+      console.error(error);
+      return new UserResponse({ status: 500, statusText: `Error writing to database while updating user: ${user_id}` });
+    }    
+
+    return new UserResponse({ status: 200, statusText: 'User updated successfully', user_id: updatedUser.id });
   }
 
   async getTasks(user: User): Promise<Task[]> {
     const user_id = user.id;
-    const dbUser = this.jsonData.users.find((u: any) => (u.id) === user_id);
+    const dbUser: any = this.jsonData.users.find((user: User) => user.id === user_id);
     if (!dbUser) {
       return [];
     }
+    // Currently using this for backwards compatability with the way old tasks worked.
+    // TODO: Deprecate this one we have the JSON schema fully fleshed out
     if (dbUser.tasks) {
       return dbUser.tasks;
     }
-    const tasks = this.jsonData.tasks.filter((task: any) => task.user_id === user.id);
+    const tasks = this.jsonData.tasks.filter((task: Task) => task.user_id === user.id);
     return tasks;
   }
 
@@ -122,7 +146,7 @@ class JsonDatabase implements Database {
   }
 
   async addTask(task: Task): Promise<TaskResponse> {
-    const user: User = this.jsonData.users.find((user: any) => user.id === task.user_id);
+    const user: User = this.jsonData.users.find((user: User) => user.id === task.user_id);
     if (!user) {
       return new TaskResponse(400, `Could not find user for task with id: ${task.user_id}`, task.id);
     }
@@ -138,7 +162,7 @@ class JsonDatabase implements Database {
     // Adding id to newly inserted task.
     // id is protected, so we cannot edit directly.
     // luckily this task only exists as type Task until we write it out as JSON
-    this.jsonData.tasks.push({ ...task.toJSON(), _id: taskId });
+    this.jsonData.tasks.push({ ...task.toJSON(), id: taskId });
     try {
       await fs.writeFile(temp_db_filename, JSON.stringify(this.jsonData));
     }
@@ -149,16 +173,36 @@ class JsonDatabase implements Database {
     return new TaskResponse({ status: 200, statusText: 'Inserted', task_id: taskId });
   }
 
-  async updateTask(task_id: string, update: TaskUpdateBuilder): Promise<TaskResponse> {
-    // const result = await this.userCollection.updateOne({"_id": new ObjectId(user_id)}, update.getUpdate());
-    const user = this.jsonData.tasks.find((task: Task) => task.id === task_id );
-    if (!user) {
+  // TODO: find a way to generalize this update builder. maybe we just input an update that is of type Task or something
+  //      that we don't have to ignore the UpdateBuilder
+  async updateTask(task_id: string, update: any): Promise<TaskResponse> {
+    const task: any = this.jsonData.tasks.find((task: Task) => task.id === task_id);
+    if (!task) {
       return new TaskResponse({ status: 400, statusText: `No task with ID: ${task_id} found` });
     }
-    // Figure out what to do with the UserUpdateBuilder
-    // user = update
-    // return new UserResponse({status: 200, statusText: "success", user_id: user_id});
-    return new TaskResponse({ status: 400, statusText: 'Task update not implemented yet' });
+
+    const updatedTask = task;
+    if (update) {
+      Object.keys(update).forEach((key: any) => {
+        // TODO: Maybe add a check to make sure stuff like id doesn't get changed?
+        if (task[key]) {
+          updatedTask[key] = update[key];
+        }
+      });
+    }
+
+    const taskIndex: number = this.jsonData.tasks.findIndex(task);
+    this.jsonData.tasks[taskIndex] = updatedTask;
+
+    try {
+      await fs.writeFile(temp_db_filename, JSON.stringify(this.jsonData));
+    }
+    catch (error: any) {
+      console.error(error);
+      return new TaskResponse({ status: 500, statusText: `Error writing to database while updating Task: ${task_id}` });
+    }
+    
+    return new TaskResponse({ status: 200, statusText: 'Task updated successfully', task_id: updatedTask.id });
   }
 
   closeDB(): void {
