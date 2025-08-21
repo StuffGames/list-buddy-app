@@ -1,10 +1,11 @@
-import type { User, UserResponse, UserUpdateBuilder } from './user-object';
-import type { Task, TaskResponse, TaskUpdateBuilder } from './task-objects';
-import type {
-  DatabaseConnectionError,
-  InvalidUserError,
-  InvalidTaskError
-} from './exceptions';
+/* eslint-disable no-unused-vars */
+import type { User, UserResponse } from './user-object';
+import type { Task, TaskResponse } from './task-objects';
+// import type {
+//   DatabaseConnectionError,
+//   InvalidUserError,
+//   InvalidTaskError
+// } from './exceptions';
 
 /**
  * Database Interface for interaction between different kinds of databases.  
@@ -57,10 +58,10 @@ export interface Database {
      * Updates user in the database with new data from the update builder
      * 
      * @param user_id The ObjectId that corresponds to the user in the collection
-     * @param update An update builder that is constructed with fields that are to be updated
+     * @param update An object containing fields to update the task with
      * @returns UserResponse indicating success (200) or failure (something else)
      */
-    updateUser(user_id: string, update: UserUpdateBuilder): Promise<UserResponse>;
+    updateUser(user_id: string, update: object): Promise<UserResponse>;
 
     /**
      * Get a list of tasks (as Task objects) from a specific user
@@ -93,10 +94,10 @@ export interface Database {
     /**
      * Updates task in the database with new data from the update builder
      * @param task_id ID of the task to update
-     * @param update An update builder with constructed fields to update
+     * @param update An object containing fields to update the task with
      * @returns TaskResponse indicating success (200) or failure (400)
      */
-    updateTask(task_id: string, update: TaskUpdateBuilder): Promise<TaskResponse>;
+    updateTask(task_id: string, update: object): Promise<TaskResponse>;
 
     closeDB(): void;
 }

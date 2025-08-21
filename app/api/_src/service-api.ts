@@ -148,10 +148,15 @@ export async function taskUpdate(params: any): Promise<ApiResponse> {
 
     // TODO: Fix this so that the task builder is built based on whatever fields available in params variable
     // Currently just works based on input from 'api/openai/importance'
-    const taskResponse = await db.updateTask(
-      params.task_id,
-      new TaskUpdateBuilder().setDescription(params.description).setCompleted(params.completed)
-    );
+    const taskUpdate = dbType === 'mongodb' ?
+      // TODO: Move this taskBuilder logic into the appropriate database.
+      //      Basically, we want to convert a normal update object into the specific database format
+      new TaskUpdateBuilder().setDescription(params.description).setCompleted(params.completed).getUpdate() :
+      {
+        description: params.description,
+        completed: params.completed
+      };
+    const taskResponse = await db.updateTask(params.task_id, taskUpdate);
 
     if (taskResponse.status !== 200) {
       return {
