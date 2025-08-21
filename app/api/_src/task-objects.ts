@@ -56,7 +56,7 @@ export class Task extends DB_Object {
     
     // TODO: redo this and just make an interface (for type hinting) for the constructor
     if (typeof objectOrId === 'object') {
-      this._id = objectOrId._id;
+      this._id = objectOrId.id;
       this._user_id = objectOrId.user_id;
       this._name = objectOrId.name;
       this._deadline = objectOrId.deadline;
@@ -140,7 +140,7 @@ export class Task extends DB_Object {
 
   public toJSON(): object {
     const result = {
-      _id: '',
+      id: '',
       user_id: this.user_id,// Following is for MongoDB: new ObjectId(this._user_id),
       name: this._name,
       deadline: this._deadline,
@@ -153,7 +153,7 @@ export class Task extends DB_Object {
     };
         
     if (this.id) {
-      result._id = this.id;
+      result.id = this.id;
     }
 
     return result;
