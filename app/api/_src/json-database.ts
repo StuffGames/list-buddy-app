@@ -74,7 +74,9 @@ class JsonDatabase implements Database {
   }
 
   async addUser(user: User): Promise<UserResponse> {
-    this.jsonData.users.push(user.toJSON());
+    const userId = randomUUID();
+    this.jsonData.users.push({ ...user.toJSON(), id: userId });
+
     try {
       await fs.writeFile(temp_db_filename, JSON.stringify(this.jsonData));
     }
@@ -84,7 +86,7 @@ class JsonDatabase implements Database {
       console.error(error);
       return new UserResponse({ status: 400, statusText: `Failed to add user: ${user.username}` });
     }
-    return new UserResponse({ status: 200, statusText: 'Inserted', user_id: randomUUID() });
+    return new UserResponse({ status: 200, statusText: 'Inserted', user_id: userId });
   }
 
   async updateUser(user_id: string, update: any): Promise<UserResponse> {
@@ -93,7 +95,7 @@ class JsonDatabase implements Database {
       return new UserResponse({ status: 400, statusText: `No user with ID: ${user_id} found` });
     }
 
-    const updatedUser = user;
+    const updatedUser = { ...user };
     if (update) {
       Object.keys(update).forEach((key: any) => {
         // TODO: Maybe add a check to make sure stuff like id doesn't get changed?
@@ -103,7 +105,7 @@ class JsonDatabase implements Database {
       });
     }
 
-    const userIndex: number = this.jsonData.users.findIndex(user);
+    const userIndex: number = this.jsonData.users.findIndex((user: User) => user.id === user_id);
     this.jsonData.users[userIndex] = updatedUser;
 
     try {
@@ -129,6 +131,8 @@ class JsonDatabase implements Database {
       return dbUser.tasks;
     }
     const tasks = this.jsonData.tasks.filter((task: Task) => task.user_id === user.id);
+    // TODO: Map all tasks to task objects when returning
+    // return tasks.map((task: any) => new Task(task));
     return tasks;
   }
 
